@@ -1,15 +1,16 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Arif-Devs/wallet_api/1.0.0
   - description: for dev server
-    url: http://localhost:4000/api/v1
-
+    url: http://localhost:3000/api/v1
 info:
   version: "1.0.0"
   title: wallet api
   description: The API for the EatBacon IOT project
   contact:
-    name: Arifur Rahman.
+    name: Arifur Rahman
     email: arifur.sew@gmail.com
 tags:
   - name: Health
@@ -401,7 +402,7 @@ paths:
                         format: url
                         example: /users/search?q=test&page=1&limit=10&status=active
                       nextPage:
-                        type: string
+                        type: stiring
                         format: url
                         example: /users/2/search?q=test&page=2&limit=10
                       prevPage:
@@ -533,7 +534,7 @@ paths:
                     example: 200
                   message:
                     type: string
-                    example: data retrieve success
+                    example: data retrive success
                   data:
                     allOf:
                       - type: object
@@ -646,4 +647,3023 @@ paths:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/sortBy"
-        - $ref:
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/user"
+      responses:
+        "200":
+          description: Retrive all Role according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success!
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            _id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/role"
+                        - type: object
+                          properties:
+                            users:
+                              type: array
+                              items:
+                                $ref: "#/components/schemas/user"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /roles
+                      required:
+                        - id
+                        - name
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /roles/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /roles/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /roles/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new role
+      tags: [Role]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      requestBody:
+        description: manage role
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/role"
+              required: [name]
+      responses:
+        "201":
+          description: Role Created Successfully!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              _id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/role"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/roles/{id}":
+    put:
+      description: update or create new role
+      tags: [Role]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: permission request body.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: delete-user
+              required: [name]
+
+      responses:
+        "201":
+          description: Role created!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/permission"
+                          - $ref: "#/components/schemas/timestamp"
+
+        "200":
+          description: Role has been updated!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/permission"
+                          - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    patch:
+      description: update role
+      tags: [Role]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+
+      requestBody:
+        description: role request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: arif123
+              required: [name]
+      responses:
+        "200":
+          description: role has been updated!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/permission"
+                          - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      description: delete role
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      tags: [Role]
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Role has been deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: Role has been deleted
+
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+
+  #Permission endpoints----------------------------------
+  "/permissions":
+    get:
+      description: Retrive all Permission according to search params with pagination.
+      tags: [Permission]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+      responses:
+        "200":
+          description: Retrive all Permission according to search params with pagination.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/permission"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: string
+                              example: /permission
+                      required:
+                        - id
+                        - name
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: object
+                        format: url
+                        example: /permission/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: object
+                        format: url
+                        example: /permission/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: object
+                        format: url
+                        example: /permission/1/search?q=test&page=1&limit=10
+                  pagenation:
+                    $ref: "#/components/schemas/pagination"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new permission.
+      tags: [Permission]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      requestBody:
+        description: Permission Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: update-user
+              required: [name]
+      responses:
+        "201":
+          description: permission has been created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/201"
+                      - type: object
+                        properties:
+                          id:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/permission"
+                      - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/permissions/{id}":
+    put:
+      description: Update or Create new Permission.
+      tags: [Permission]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: Permission Request Body.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: update-user
+              required: [name]
+      responses:
+        "201":
+          description: Permission has been created!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/permission"
+                          - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: Permission has been updated!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/permission"
+                          - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      description: delete permission.
+      tags: [Permission]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: permission has been deleted!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: permission has been deleted.
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+  #Catagory endpoints---------------------------
+  "/categories":
+    get:
+      description: Retrive all Category according to search params with pagination
+      tags: [Category]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+      responses:
+        "200":
+          description: Retrive all Category according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/category"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /categories
+                      required:
+                        - id
+                        - name
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /categories/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /categories/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /categories/1/search?q=test&page=1&limit=10
+
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new category
+      tags: [Category]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      requestBody:
+        description: Category Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: arif
+              required: [name]
+      responses:
+        "201":
+          description: Category Created Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/category"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/category/{id}":
+    put:
+      description: Update or Create new Category
+      tags: [Category]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: Category Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: buy book
+              required: [name]
+      responses:
+        "201":
+          description: Category Created Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/category"
+                          - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: Category Updated Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/category"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      description: delete category
+      tags: [Category]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: category has been deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: category has been deleted!
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+
+  #account endpoints--------------------------------------------
+
+  "/accounts":
+    get:
+      description: get all accounts
+      tags: [Account]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+        - $ref: "#/components/parameters/user"
+      responses:
+        "200":
+          description: get all accounts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success!
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/account"
+                        - type: object
+                          properties:
+                            user:
+                              $ref: "#/components/schemas/user"
+                        - type: object
+                          properties:
+                            expanses:
+                              type: array
+                              items:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    amount:
+                                      type: integer
+                                      example: 10000
+                                    note:
+                                      type: string
+                                      example: internet bill
+                                    category:
+                                      allOf:
+                                        - $ref: "#/components/schemas/category"
+                        - type: object
+                          properties:
+                            incomes:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  amount:
+                                    type: integer
+                                    example: 10000
+                                  note:
+                                    type: string
+                                    example: internet bill
+                                  category:
+                                    allOf:
+                                      - $ref: "#/components/schemas/category"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /account
+                      required:
+                        - id
+                        - name
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /accounts/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /accounts/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /accounts/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new account
+      tags: [Account]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      requestBody:
+        description: account request body
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/account"
+              required: [name, account_details, initial_value]
+      responses:
+        "201":
+          description: account has been created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/account"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/accounts/{id}":
+    get:
+      description: get single account
+      tags: [Account]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+      responses:
+        "200":
+          description: data retrive success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Data Retrive Successully!
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/account"
+                      - type: object
+                        properties:
+                          user:
+                            $ref: "#/components/schemas/user"
+                      - type: object
+                        properties:
+                          expanses:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                amount:
+                                  type: integer
+                                  example: 10000
+                                note:
+                                  type: string
+                                  example: internet bill
+                                categoryId:
+                                  $ref: "#/components/schemas/category"
+                                goalId:
+                                  $ref: "#/components/schemas/goal"
+                      - type: object
+                        properties:
+                          income:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  $ref: "#/components/schemas/id"
+                                amount:
+                                  type: integer
+                                  example: 10000
+                                note:
+                                  type: string
+                                  example: internet bill
+                                categoryId:
+                                  $ref: "#/components/schemas/category"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /accounts/{accoduntId}
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+    put:
+      description: update or create account
+      tags: [Account]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: account request body
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/account"
+              required: [name, account_details, initial_value]
+      responses:
+        "201":
+          description: account has been created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/account"
+                          - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: account has been updated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/account"
+                          - $ref: "#/components/schemas/timesteamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    patch:
+      description: update account.
+      tags: [Account]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: account request body
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/account"
+              required: [name, account_details, initial_value]
+      responses:
+        "200":
+          description: account has been updated!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/account"
+                          - $ref: "#/components/schemas/timesteamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      description: delete account
+      tags: [Account]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: account has been deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: account has been deleted!
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+
+  #Expanses end point--------------------------------------
+
+  "/expanses":
+    get:
+      description: get all expanses
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+        - refreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+        - $ref: "#/components/parameters/user"
+        - $ref: "#/components/parameters/goal"
+        - $ref: "#/components/parameters/account"
+        - $ref: "#/components/parameters/category"
+        - $ref: "#/components/parameters/min"
+        - $ref: "#/components/parameters/max"
+      responses:
+        "200":
+          description: Retrive all EXpanses according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success!
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/expanse"
+                        - type: object
+                          properties:
+                            user:
+                              $ref: "#/components/schemas/user"
+                        - type: object
+                          properties:
+                            goal:
+                              $ref: "#/components/schemas/goal"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /expanses
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /expanses/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /expanses/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /expanses/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new expanses
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      requestBody:
+        description: expanses request body.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10000
+                note:
+                  type: string
+                  example: internet bill
+                categoryId:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+                goalId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, userId, accountId]
+
+      responses:
+        "201":
+          description: Expanse Created Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                  - type: object
+                    properties:
+                      amount:
+                        type: integer
+                        example: 10000
+                      note:
+                        type: string
+                        example: internet bill
+                      categoryId:
+                        $ref: "#/components/schemas/id"
+                      userId:
+                        $ref: "#/components/schemas/id"
+                      accountId:
+                        $ref: "#/components/schemas/id"
+                      goalId:
+                        $ref: "#/components/schemas/id"
+                  - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/expanses/{id}":
+    put:
+      description: update or create new expanses.
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: expanses request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  format: int32
+                  example: 10000
+                note:
+                  type: string
+                  format: string
+                  example: internet bill
+                categoryid:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+                goalId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, userId, accountId]
+      responses:
+        "201":
+          description: expanse has been created.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                properties:
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            $ref: "#/components/schemas/id"
+                      - type: object
+                        properties:
+                          amount:
+                            type: integer
+                            example: "10000"
+                          note:
+                            type: string
+                            example: "Basha khoroch"
+                          categoryId:
+                            $ref: "#/components/schemas/id"
+                          userId:
+                            $ref: "#/components/schemas/id"
+                          accountId:
+                            $ref: "#/components/schemas/id"
+                          goalId:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: Expanse Updated Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                  - type: object
+                    properties:
+                      amount:
+                        type: integer
+                        example: "10000"
+                      note:
+                        type: string
+                        example: "Basha khoroch"
+                      categoryId:
+                        $ref: "#/components/schemas/id"
+                      userId:
+                        $ref: "#/components/schemas/id"
+                      accountId:
+                        $ref: "#/components/schemas/id"
+                      goalId:
+                        $ref: "#/components/schemas/id"
+                  - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    patch:
+      description: Update Expanse
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: expanse request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10000
+                note:
+                  type: string
+                  example: internet bill
+                categoryId:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+                goalId:
+                  $ref: "#/components/schemas/id"
+      responses:
+        "200":
+          description: expanse has been updated.
+          content:
+            application.json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - type: object
+                            properties:
+                              amount:
+                                type: integer
+                                example: "10000"
+                              note:
+                                type: string
+                                example: "internet bill"
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+                              goalId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      description: retrive single expanse data
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+      responses:
+        "200":
+          description: Data Retrive Successfull
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Data Retrive Successfull
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          data:
+                            allOf:
+                              - type: object
+                                properties:
+                                  id:
+                                    $ref: "#/components/schemas/id"
+                              - $ref: "#/components/schemas/expanse"
+                              - type: object
+                                properties:
+                                  link:
+                                    type: string
+                                    format: url
+                                    example: /expanses/{id}
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+    delete:
+      description: delete expanses
+      tags: [Expanse]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: expanse has been deleted!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 204
+                  message:
+                    type: string
+                    example: expanse has been deleted
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+  # income endpoints-------------------------------------------------
+
+  "/incomes/":
+    get:
+      description: Retrive all Incomes according to search params with pagination
+      tags: [Income]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+        - $ref: "#/components/parameters/user"
+        - $ref: "#/components/parameters/account"
+        - $ref: "#/components/parameters/category"
+        - $ref: "#/components/parameters/min"
+        - $ref: "#/components/parameters/max"
+
+      responses:
+        "200":
+          description: Retrive all Incomes according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success.
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/income"
+                        - type: object
+                          properties:
+                            user:
+                              $ref: "#/components/schemas/user"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /incomes
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /expanses/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /expanses/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /expanses/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+
+    post:
+      description: create new income
+      tags: [Income]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      requestBody:
+        description: income request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10000
+                note:
+                  type: string
+                  example: internet bill
+                categoryId:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, userId, accountId]
+      responses:
+        "201":
+          description: income has been created!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                              # - type: object
+                              #   properties:
+                              amount:
+                                type: integer
+                                example: 10000
+                              note:
+                                type: string
+                                example: internet bill
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+
+  "/incomes/{id}":
+    put:
+      description: Update or Create new Income
+      tags: [Income]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: income request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10000
+                note:
+                  type: string
+                  example: internet bill
+                categoryId:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, userId, accountId]
+
+      responses:
+        "201":
+          description: income has been updated.
+          content:
+            appplication/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                              amount:
+                                type: integer
+                                example: "10000"
+                              note:
+                                type: string
+                                example: "Basha khoroch"
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: income has been updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+
+                              amount:
+                                type: integer
+                                example: "10000"
+                              note:
+                                type: string
+                                example: "internet bill"
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    patch:
+      description: Update Income
+      tags: [Income]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: Income Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: "10000"
+                note:
+                  type: string
+                  example: "internet bill"
+                categoryId:
+                  $ref: "#/components/schemas/id"
+                userId:
+                  $ref: "#/components/schemas/id"
+                accountId:
+                  $ref: "#/components/schemas/id"
+      responses:
+        "200":
+          description: income hase been updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                              amount:
+                                type: integer
+                                example: "10000"
+                              note:
+                                type: string
+                                example: "internet bill"
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      description: single income
+      tags: [Income]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+      responses:
+        "200":
+          description: Data Retrive Successully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Data Retrive Successully!
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/income"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /incomes/{incomesId}
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+    delete:
+      description: delete income
+      tags: [Income]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: income delete success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: Income deleted successfully
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+
+  # goal endpoints---------------------------------------------
+
+  "/goals":
+    get:
+      description: Retrive all Goals according to search params with pagination
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+        - $ref: "#/components/parameters/user"
+        - $ref: "#/components/parameters/status"
+        - $ref: "#/components/parameters/fromdate"
+        - $ref: "#/components/parameters/todate"
+      responses:
+        "200":
+          description: Retrive all Goals according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/goal"
+                        - type: object
+                          properties:
+                            user:
+                              $ref: "#/components/schemas/user"
+                        - type: object
+                          properties:
+                            history:
+                              type: array
+                              items:
+                                allOf:
+                                  - type: object
+                                    properties:
+                                      id:
+                                        $ref: "#/components/schemas/id"
+                                  - type: object
+                                    properties:
+                                      amount:
+                                        type: integer
+                                        example: 10000
+                                      note:
+                                        type: string
+                                        example: internet bill
+                                      category:
+                                        allOf:
+                                          - $ref: "#/components/schemas/category"
+                                      user:
+                                        allOf:
+                                          - $ref: "#/components/schemas/user"
+                                      account:
+                                        allOf:
+                                          - $ref: "#/components/schemas/account"
+                                  - $ref: "#/components/schemas/timestamp"
+                                  - type: object
+                                    properties:
+                                      link:
+                                        type: string
+                                        format: url
+                                        example: /goals
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /goals/search?q=pink&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /goals/2/search?q=pink&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /goals/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    post:
+      description: create new goal
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      requestBody:
+        description: goal request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                taget_amount:
+                  type: integer
+                  example: 10000
+                save_amount:
+                  type: integer
+                  example: 10000
+                name:
+                  type: string
+                  example: "internet bill"
+                note:
+                  type: string
+                  example: "internet bill"
+                status:
+                  type: string
+                  enum: [pending, complete]
+                  example: "pending"
+                desired_date:
+                  type: string
+                  format: datetime
+                  example: "2024-07-20T02:14:06.058Z"
+                userId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, target_amount, saved_amount, desired_date]
+      responses:
+        "201":
+          description: goal has been created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - type: object
+                            properties:
+                              target_amount:
+                                type: integer
+                                example: "10000"
+                              saved_amount:
+                                type: integer
+                                example: "10000"
+                              name:
+                                type: string
+                                example: "internet bill"
+                              note:
+                                type: string
+                                example: "internet bill"
+                              status:
+                                type: string
+                                enum: [pending, complete]
+                                example: "pending"
+                              desired_date:
+                                type: string
+                                format: datetime
+                                example: "2023-07-20T02:14:06.058Z"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/goals/{id}":
+    put:
+      description: update or create new goal
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: Goal Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target_amount:
+                  type: integer
+                  example: "10000"
+                saved_amount:
+                  type: integer
+                  example: "10000"
+                name:
+                  type: string
+                  example: "internet bill"
+                note:
+                  type: string
+                  example: "internet bill"
+                status:
+                  type: string
+                  enum: [pending, complete]
+                  example: "pending"
+                desired_date:
+                  type: string
+                  format: datetime
+                  example: "2024-07-20T02:14:06.058Z"
+                userId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, target_amount, saved_amount, desired_date]
+      responses:
+        "201":
+          description: goal has been created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/201"
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                  - type: object
+                    properties:
+                      target_amount:
+                        type: integer
+                        example: "10000"
+                      saved_amount:
+                        type: integer
+                        example: "10000"
+                      name:
+                        type: string
+                        example: "internet bill"
+                      note:
+                        type: string
+                        example: "internet bill"
+                      status:
+                        type: string
+                        enum: [pending, complete]
+                        example: "pending"
+                      desired_date:
+                        type: string
+                        format: datetime
+                        example: "2023-07-20T02:14:06.058Z"
+                      userId:
+                        $ref: "#/components/schemas/id"
+                  - $ref: "#/components/schemas/timestamp"
+        "200":
+          description: goal has been updated.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - type: object
+                            properties:
+                              amount:
+                                type: integer
+                                example: "10000"
+                              note:
+                                type: string
+                                example: "internet bill"
+                              categoryId:
+                                $ref: "#/components/schemas/id"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                              accountId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    patch:
+      description: update goal
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: Goal Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target_amount:
+                  type: integer
+                  example: "10000"
+                saved_amount:
+                  type: integer
+                  example: "10000"
+                name:
+                  type: string
+                  example: "internet bill"
+                note:
+                  type: string
+                  example: "internet bill"
+                status:
+                  type: string
+                  enum: [pending, complete]
+                  example: "pending"
+                desired_date:
+                  type: string
+                  format: datetime
+                  example: "2024-07-20T02:14:06.058Z"
+                userId:
+                  $ref: "#/components/schemas/id"
+              required: [amount, target_amount, saved_amount, desired_date]
+      responses:
+        "200":
+          description: Goal Created Successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - type: object
+                            properties:
+                              target_amount:
+                                type: integer
+                                example: "10000"
+                              saved_amount:
+                                type: integer
+                                example: "10000"
+                              name:
+                                type: string
+                                example: "Basha khoroch"
+                              note:
+                                type: string
+                                example: "Basha khoroch"
+                              status:
+                                type: string
+                                enum: [pending, complete]
+                                example: "pending"
+                              desired_date:
+                                type: string
+                                format: datetime
+                                example: "2023-07-20T02:14:06.058Z"
+                              userId:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      description: delete goal
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: Goal Deleted Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 204
+                  message:
+                    type: string
+                    format: string
+                    example: Goal deleted successfully
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+    get:
+      description: get single goal
+      tags: [Goal]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#/components/parameters/select"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: object
+                    format: int32
+                    example: data retrive success!
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/goal"
+                      - type: object
+                        properties:
+                          history:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/expanse"
+                      - $ref: "#/components/schemas/timestamp"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /goals/{incomesId}
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+
+  "/deta-analysis":
+    get:
+      description: "All Users Data Analysis and get financial State"
+      tags: [Record]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/fromdate"
+        - $ref: "#/components/parameters/todate"
+      responses:
+        "200":
+          description: data retrive success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: data retrive success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: "#/components/schemas/id"
+                        user:
+                          $ref: "#/components/schemas/user"
+                        totalIncome:
+                          type: integer
+                          example: 15000
+                        totalExpanse:
+                          type: integer
+                          example: 10000
+                        topFiveExpanseCategory:
+                          type: array
+                          items:
+                            type: string
+                            example: shopping
+                        finalcialState:
+                          type: string
+                          example: poor
+                        goals:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/goal"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+
+  "/data-analysis/{id}":
+    get:
+      description: "Single Users Data Analysis and get financial State"
+      tags: [Record]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Data Retrive Successully!"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: "Data Retrive Successully!"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                      user:
+                        $ref: "#/components/schemas/user"
+                      totalIncome:
+                        type: integer
+                        example: 200000
+                      totalexpanse:
+                        type: integer
+                        example: 100000
+                      topFiveExpansesCategory:
+                        type: array
+                        items:
+                          type: string
+                          example: "Shopping"
+                      goals:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/goal"
+                      finalcialState:
+                        type: string
+                        example: "poor"
+                      expertsOpenion:
+                        type: string
+                        example: "poor"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+
+  "/filter-data-analysis":
+    get:
+      description: "All Users Data Analysis and get financial State based on financial State"
+      tags: [Record]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/fromdate"
+        - $ref: "#/components/parameters/todate"
+        - $ref: "#/components/parameters/financialstate"
+      responses:
+        "200":
+          description: data retrive success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Data Retrive Successully!
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: "#/components/schemas/id"
+                        user:
+                          $ref: "#/components/schemas/user"
+                        totalIncome:
+                          type: integer
+                          example: 200000
+                        totalexpanse:
+                          type: integer
+                          example: 100000
+                        topFiveExpansesCategory:
+                          type: array
+                          items:
+                            type: string
+                            example: "Shopping"
+                        finalcialState:
+                          type: string
+                          example: "poor"
+                        goals:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/goal"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+
+#---------------------------------ALL COMPONENTS-----------------------------------------------
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    RefreshTokenHeader:
+      type: apiKey
+      in: header
+      name: x-refresh-token
+  responses:
+    "403":
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 403
+              error:
+                type: string
+                example: Unauthorized
+              message:
+                type: string
+                example: You don't have the right permissions.
+
+    "404":
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: Not Found
+              error:
+                type: string
+                example: 404
+              message:
+                type: string
+                example: resource not found
+    "500":
+      description: server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 500
+              error:
+                type: string
+                example: server error
+              message:
+                type: string
+                example: server not responding! Try again later.
+    "400":
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400
+              message:
+                type: string
+                example: Bad request
+              error:
+                $ref: "#/components/schemas/400"
+    "405":
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 405
+              error:
+                type: string
+                example: Method Not Allowed
+              message:
+                type: string
+                example: You are hiting on a invalid method
+    "401":
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 401
+              error:
+                type: string
+                example: Unauthenticated
+              message:
+                type: string
+                example: You are not an authenticated user
+
+  schemas:
+    permission:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "create-user"
+    income:
+      type: object
+      properties:
+        amount:
+          type: integer
+          example: "1200"
+        note:
+          type: string
+          example: "internet bill"
+        category:
+          allOf:
+            - $ref: "#/components/schemas/category"
+        user:
+          allOf:
+            - $ref: "#/components/schemas/user"
+        account:
+          allOf:
+            - $ref: "#/components/schemas/account"
+    goal:
+      type: object
+      properties:
+        target_amount:
+          type: integer
+          example: "1200"
+        saved_amount:
+          type: integer
+          example: "1200"
+        name:
+          type: string
+          example: "internet bill"
+        note:
+          type: string
+          example: "internet bill"
+        status:
+          type: string
+          enum: [pending, complete]
+          example: "pending"
+        desired_date:
+          type: string
+          format: datetime
+          example: "2024-07-20T02:14:06.058Z"
+        userId:
+          $ref: "#/components/schemas/id"
+    account:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "ncc bank"
+        account_details:
+          type: string
+          example: "Account No. 2801385727001"
+        initial_value:
+          type: integer
+          example: "100000"
+        userId:
+          type: string
+          example: "kfj44g75d7d8f9f154f85f45"
+    category:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "admin"
+        slug:
+          type: string
+          example: "admin"
+    expanse:
+      type: object
+      properties:
+        amount:
+          type: integer
+          example: "1200"
+        note:
+          type: string
+          example: "internet bill"
+        category:
+          allOf:
+            - $ref: "#/components/schemas/category"
+        user:
+          allOf:
+            - $ref: "#/components/schemas/user"
+        account:
+          allOf:
+            - $ref: "#/components/schemas/account"
+    user:
+      type: object
+      properties:
+        userName:
+          type: string
+          format: int32
+          example: "arif"
+        email:
+          type: string
+          format: int32
+          example: "arif@example.com"
+        phone:
+          type: string
+          example: "01715895560"
+        roleId:
+          type: string
+          example: "jfiuhd454fkhf4d5gfjdhg4578"
+    role:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "admin"
+        permissions:
+          type: array
+          items:
+            type: string
+            example: "create-user"
+
+    id:
+      type: string
+      example: "47g54d8d2d8f9f154f85f45"
+    token:
+      type: object
+      properties:
+        # refreshToken:
+        # type: string
+        # example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFyaWYxMjMiLCJpYXQiOjE1MTYyMzkwMjJ9.5U-440uTzQ8ANhT4H3emCdCf8LYzSbw1DKwSms5SJZg'
+
+        accesstoken:
+          type: string
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFyaWYxMjMiLCJpYXQiOjE1MTYyMzkwMjJ9.5U-440uTzQ8ANhT4H3emCdCf8LYzSbw1DKwSms5SJZg"
+    timestamp:
+      type: object
+      properties:
+        createdAt:
+          type: object
+          format: datetime
+          example: "2024-07-15T02:14:06.058Z"
+        updatedAt:
+          type: object
+          format: datetime
+          example: "2024-07-15T02:14:06.058Z"
+      required:
+        - createdAt
+        - updatedAt
+    "400":
+      type: array
+      items:
+        type: object
+        properties:
+          fields:
+            type: string
+            example: userName
+          message:
+            type: string
+            example: Max length is 20 latters
+
+    "200":
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 200
+        message:
+          type: string
+          example: request handle successful!.
+    "201":
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 201
+        message:
+          type: string
+          example: Data Created Successully!.
+    pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 2
+        limit:
+          type: integer
+          format: int32
+          example: 10
+        nextPage:
+          type: integer
+          format: int32
+          example: 3
+        prevPage:
+          type: integer
+          format: int32
+          example: 1
+        totalPage:
+          type: integer
+          format: int32
+          example: 5
+        totalItems:
+          type: integer
+          format: int32
+          example: 30
+      required:
+        - page
+        - limit
+        - totalPage
+        - totalItems
+  parameters:
+    status:
+      in: query
+      name: status
+      description: Get spacific status data
+      schema:
+        type: string
+        example: "pending"
+    financialstate:
+      in: query
+      name: financialstate
+      description: Get spacific financialstate data
+      schema:
+        type: string
+        example: "poor"
+    fromdate:
+      in: query
+      name: fromdate
+      description: Get data from begining of a date to current
+      schema:
+        type: string
+        format: datetime
+        example: "2024-07-20T02:14:06.058Z"
+    todate:
+      in: query
+      name: todate
+      description: Get data from end of a date
+      schema:
+        type: string
+        format: datetime
+        example: "2023-07-20T02:14:06.058Z"
+    user:
+      in: query
+      name: user
+      description: get spacific user data
+      schema:
+        type: string
+        example: 54d78d2d7d8f9f154f85f45
+    select:
+      in: query
+      name: select
+      description: Select specific colum data
+      schema:
+        type: string
+        example: "catagory, name"
+    populate:
+      in: query
+      name: populate
+      description: select realtional data
+      schema:
+        type: string
+        example: "catagory, role"
+    id:
+      in: path
+      name: id
+      required: true
+      description: Document unique id
+      schema:
+        type: string
+        example: "58fh23h5h7f5f6d8y7h5f4"
+    token:
+      in: query
+      name: token
+      description: Verification Token
+      schema:
+        type: string
+        example: "58fh23h5h7f5f6d8y7h5f4"
+    page:
+      in: query
+      name: page
+      description: Current page number for pagination
+      schema:
+        type: integer
+        format: int32
+        example: 2
+    limit:
+      in: query
+      name: limit
+      description: Data Redered limit Number for handle Pagination
+      schema:
+        type: integer
+        format: int31
+        example: 2
+    sortBy:
+      in: query
+      name: sortBy
+      description: Data Sorting Field
+      schema:
+        type: string
+        format: string
+        example: updatedAt
+    sortType:
+      in: query
+      name: sortType
+      description: Data Sorting Type (ase,desc)
+      schema:
+        type: string
+        format: string
+        enum:
+          - ase
+          - desc
+        example: desc
+    search:
+      in: query
+      name: search
+      description: Data Search params
+      schema:
+        type: string
+        example: arif
+
+    role:
+      in: query
+      name: role
+      description: Get spacific role users
+      schema:
+        type: string
+        example: "58vfh254fe479dgr25d478dg26g77"
+    goal:
+      in: query
+      name: goal
+      description: get specific goal data
+      schema:
+        type: string
+        example: "58vfh254fe479dgr25d478dg26g77"
+    min:
+      in: query
+      name: min-price
+      description: get data based on minimum value
+      schema:
+        type: integer
+        example: 1000
+    max:
+      in: query
+      name: max-price
+      description: get data based on maximum value
+      schema:
+        type: integer
+        example: 20000
+    category:
+      in: query
+      name: category
+      description: Get spacific category data
+      schema:
+        type: string
+        example: "64f825a8e1e529afedd53695"
+    account:
+      in: query
+      name: account
+      description: Get spacific account data
+      schema:
+        type: string
+        example: "64f825a8e1e529afedd53695"
