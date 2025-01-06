@@ -1,14 +1,12 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/Arif-Devs/wallet_api/1.0.0
   - description: for dev server
     url: http://localhost:3000/api/v1
 info:
   version: "1.0.0"
-  title: wallet api
-  description: The API for the EatBacon IOT project
+  title: Pro_Finance_Manager_rest_API
+  description: A comprehensive REST API for managing personal finances, including user authentication, role-based permissions, income and expense tracking, and financial record management.
   contact:
     name: Arifur Rahman
     email: arifur.sew@gmail.com
