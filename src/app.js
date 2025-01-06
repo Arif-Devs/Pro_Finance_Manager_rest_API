@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 const swaggerSpec = YAML.load('./docs/swagger.yaml');
 import cors from 'cors'
 import morgan from 'morgan'
+import { notFoundHandler, globalErrorHandler} from './middleware/index.js'
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,8 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //Routs
 app.use('/api/v1', router);
 
+//Global error Handler
+app.use([notFoundHandler, globalErrorHandler])
 
 
 export default app;
