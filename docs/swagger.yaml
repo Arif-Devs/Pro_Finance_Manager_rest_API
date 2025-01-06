@@ -1,0 +1,649 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: for dev server
+    url: http://localhost:4000/api/v1
+
+info:
+  version: "1.0.0"
+  title: wallet api
+  description: The API for the EatBacon IOT project
+  contact:
+    name: Arifur Rahman.
+    email: arifur.sew@gmail.com
+tags:
+  - name: Health
+    description: Health route tag.
+  - name: Auth
+    description: handel all authentication route.
+  - name: User
+    description: handel all user related route route.
+  - name: Role
+    description: handel all role in this api route.
+  - name: Permission
+    description: handel all Permissions route.
+  - name: Category
+    description: handel all categories route.
+  - name: Account
+    description: handel all Accounts route.
+  - name: Expanse
+    description: handel all Expanses route.
+  - name: Income
+    description: handel all Incomes route.
+  - name: Goal
+    description: handel all Goals route.
+  - name: Record
+    description: handel all records route.
+paths:
+  #health route
+  "/health":
+    get:
+      description: "api Health route."
+      tags:
+        - Health
+      responses:
+        "200":
+          description: "Login successful!"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/200"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    #Auth
+  # Authentication EndPoints------------------------
+  "/auth/register":
+    post:
+      description: "User registration endpoint"
+      tags: [Auth]
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/user"
+                - type: object
+                  properties:
+                    password:
+                      type: string
+                      example: "arif8322"
+                - type: object
+                  properties:
+                    confirm_password:
+                      type: string
+                      example: "arif"
+              required:
+                - password
+                - confirm_password
+                - userName
+                - email
+      responses:
+        "200":
+          description: Registration complete successfull!.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - type: object
+                            properties:
+                              id:
+                                $ref: "#/components/schemas/id"
+                          - $ref: "#/components/schemas/user"
+                          - $ref: "#/components/schemas/token"
+                          - $ref: "#/components/schemas/timestamp"
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+  "/auth/login":
+    post:
+      description: Authenticated user login route
+      tags: [Auth]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userNameOrEmail:
+                  type: string
+                  example: "arif"
+                password:
+                  type: string
+                  example: "arif8322"
+      responses:
+        "200":
+          description: Login successful!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                  - $ref: "#/components/schemas/user"
+                  - $ref: "#/components/schemas/token"
+                  - $ref: "#/components/schemas/timestamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+  "/auth/logout":
+    post:
+      description: user logout route.
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/id"
+              required:
+                - id
+      responses:
+        "200":
+          description: Logout successful!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "401":
+          $ref: "#/components/responses/401"
+  "/auth/forgot-password/user-verify":
+    post:
+      description: user and email verify for reset password route.
+      tags: [Auth]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userNamrOrEmail:
+                  type: string
+                  example: arif@example.com
+              required:
+                - userNamrOrEmail
+
+      responses:
+        "200":
+          description: success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: verification code has been sent to your email.
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+  "/auth/reset-password/{id}/{token}":
+    post:
+      description: verify token for reset password
+      tags: [Auth]
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/token"
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  format: int32
+                  example: "58fh23"
+                userId:
+                  type: string
+                  example: "58fh23h5h7f5f6d8y7h5f4"
+                password:
+                  type: string
+                  example: "arif8322"
+                confirm_password:
+                  type: string
+                  example: "arif8322"
+              required:
+                - token
+                - userId
+                - password
+                - confirm_password
+      responses:
+        "200":
+          description: Success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Verification successfull.
+
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+  "/auth/revoked-generate/token":
+    post:
+      description: Revoked refresh token and generate new access token
+      tags: [Auth]
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  format: jwt
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFyaWYxMjMiLCJpYXQiOjE1MTYyMzkwMjJ9.5U-440uTzQ8ANhT4H3emCdCf8LYzSbw1DKwSms5SJZg"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Refresh Token revoked and Access Token Generate.
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+  #User Endpoints---------------------------
+  "/users":
+    post:
+      description: create new user
+      tags: [User]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/user"
+              required:
+                - password
+                - userName
+                - email
+      responses:
+        "200":
+          description: Registration Complete!
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/200"
+                  - type: object
+                    properties:
+                      _id:
+                        $ref: "#/components/schemas/id"
+                  - $ref: "#/components/schemas/user"
+                  - $ref: "#/components/schemas/token"
+                  - $ref: "#/components/schemas/timesteamp"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+    get:
+      description: Retrive all users according to search params with pagination
+      tags: [User]
+      security:
+        - bearerAuth: []
+        - RefreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref: "#/components/parameters/sortType"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/role"
+
+      responses:
+        "200":
+          description: Retrive all users according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: "200"
+                  message:
+                    type: string
+                    format: int32
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            _id:
+                              $ref: "#/components/schemas/id"
+                        - $ref: "#/components/schemas/user"
+                        - type: object
+                          properties:
+                            role:
+                              $ref: "#/components/schemas/role"
+                        - $ref: "#/components/schemas/timestamp"
+                        - type: object
+                          properties:
+                            link:
+                              type: string
+                              format: url
+                              example: /users/{userId}
+
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /users/search?q=test&page=1&limit=10&status=active
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /users/2/search?q=test&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /users/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+  "/users/{id}":
+    patch:
+      description: profile update for authenticated user
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                  example: arif
+                email:
+                  type: string
+                  format: email
+                  example: "arif@example.com"
+                phone:
+                  type: string
+                  example: "01715895560"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: object
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Profile Updated Successfully.
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/user"
+                      - $ref: "#/components/schemas/timestamp"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /users/{userId}
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+    delete:
+      description: Delete user account
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: your account has been deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: inr32
+                    example: 204
+                  message:
+                    type: string
+                    format: int32
+                    example: account delete successfull!
+
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+    get:
+      description: get all users
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+        - $ref: "#/components/parameters/populate"
+        - $ref: "#components/parameters/select"
+      responses:
+        "200":
+          description: data retrive success!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: inr32
+                    example: 200
+                  message:
+                    type: string
+                    example: data retrieve success
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          _id:
+                            $ref: "#/components/schemas/id"
+                      - $ref: "#/components/schemas/user"
+                      - type: object
+                        properties:
+                          role:
+                            $ref: "#/components/schemas/role"
+                      - type: object
+                        properties:
+                          expanses:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/expanse"
+                      - type: object
+                        properties:
+                          income:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/income"
+                      - type: object
+                        properties:
+                          goals:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: "#/components/schemas/goal"
+                                - $ref: "#/components/schemas/timestamp"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /users/{userId}
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+        "404":
+          $ref: "#/components/responses/404"
+        "400":
+          $ref: "#/components/responses/400"
+  "/users/{id}/reset-password":
+    patch:
+      description: password reset for authenticated users
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: arif8322
+                confirm_password:
+                  type: string
+                  example: arif8322
+                old_password:
+                  type: string
+                  example: arif8322
+              required:
+                - password
+                - old_password
+      responses:
+        "200":
+          description: password updated successfull.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: password reset success!
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+
+  #role endpoints----------------------------
+
+  "/roles":
+    get:
+      description: Retrive all Role according to search params with pagination
+      tags: [Role]
+      security:
+        - bearerAuth: []
+        - efreshTokenHeader: []
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/sortBy"
+        - $ref:
