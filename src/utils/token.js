@@ -6,8 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-//Generate JWT Token
-
+//Generate JWT token
 const generateJWT = ({ payload, JWT_SECRET = process.env.JWT_SECRET, expireIn = "1h", algorithm = "HS256" }) => {
     const token = JWT.sign({ ...payload }, JWT_SECRET, { algorithm: algorithm }, expireIn)
     return token
@@ -30,7 +29,6 @@ const verifyToken = ({ JWT_SECRET = process.env.JWT_SECRET, token, algorithm = "
 }
 
 // decode JWT
-
 const decodeJWT = ({ token, algorithm = "HS256" }) => {
     try {
         return JWT.decode(token, {algorithm: algorithm})
