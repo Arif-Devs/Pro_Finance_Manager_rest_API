@@ -18,6 +18,15 @@ const isPhoneUnique = async (phone) => {
     }
 };
 
+// check input valid user name
+
+const isUserName = (value) => {
+    return /^[a-zA-Z0-9_]+$/.test(value);
+}
+
+const isEmail = (value) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
 
 //sign request body validator
 

@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import authController from '../api/v1/controller/auth/index.js';
 import authRequest from '../request/index.js'
+import { requestValidator } from '../middleware/index.js';
 
 
 
@@ -12,7 +13,7 @@ router.get('/health', (_req, res) =>
 
 
 // Auth endpoints
-  router.post('/auth/register', authRequest.registerRequestValidator,authController.register )
+  router.post('/auth/register', authRequest.registerRequestValidator, requestValidator, authController.register )
 
 
 export default router;

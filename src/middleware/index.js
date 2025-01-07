@@ -1,3 +1,3 @@
 import { notFoundHandler, globalErrorHandler } from "./globalErrorHandler.js";
-
-export { notFoundHandler, globalErrorHandler };
+import  {requestValidator}  from "./requestValidator.js";
+export { notFoundHandler, globalErrorHandler, requestValidator };
