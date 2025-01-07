@@ -1,4 +1,11 @@
 import authRequest from "./authenticateRequest.js";
+import permissionRequest from './permissionRequest.js'
 
-export default authRequest
+
+
+export  {
+    authRequest,
+    permissionRequest
+   
+}
 

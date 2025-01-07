@@ -1,4 +1,4 @@
 import UserLibs from "./User.js";
 import tokenLibs from "./token.js";
-
-export {UserLibs, tokenLibs}
+import permissionLibs from './permission.js'
+export {UserLibs, tokenLibs, permissionLibs}
