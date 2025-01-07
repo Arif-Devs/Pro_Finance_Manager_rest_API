@@ -1,3 +1,9 @@
+// Access Token Validation Time
+const ACCESSTOKENLIFETIME = '30day'
+
+// Refresh Token Validation Time
+const REFRESHTOKENLIFETIME = '60day'
+
 
 // Default User Password
 const DEFAULTPASS = 'Arif@8322'
@@ -10,6 +16,8 @@ const USERPERMISSION = ['create-account','create-expanse','create-income','singl
 
 
 export {
+    ACCESSTOKENLIFETIME,
+    REFRESHTOKENLIFETIME,
     DEFAULTPASS,
     PERMISSIONSARRAY,
     USERPERMISSION
