@@ -2,6 +2,7 @@ import { ACCESSTOKENLIFETIME, REFRESHTOKENLIFETIME } from "../config/auth.js";
 import {serverError} from "../utils/error.js";
 import tokenUtils from "../utils/token.js";
 
+// generate access and refresh token
 const generateAccess_RefreshToken = ({ payload }) => {
   try {
     const accessToken = tokenUtils.generateJWT({payload, expireIn: ACCESSTOKENLIFETIME});
