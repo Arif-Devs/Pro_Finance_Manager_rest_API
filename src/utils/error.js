@@ -1,3 +1,5 @@
+import Permission from "../model/permission.js"
+
 const unAuthenticateError = (msg = 'Your Session May Have Expired!') => {
     const error = new Error(msg)
     error.status = 401
@@ -22,11 +24,16 @@ const unAuthorizedError = (msg= 'Access Denied!')=>{
     return error
 }
 
+const permissionRelationCheck = async(id)=>{
+    const data = await Permission.findById(id).exec()
+    if(!data) throw notFoundError('Permission id not found!')
+}
 
 export {
     unAuthenticateError,
     serverError,
     notFoundError,
     unAuthorizedError,
+    permissionRelationCheck
     
 }
