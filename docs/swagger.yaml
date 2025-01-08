@@ -68,12 +68,12 @@ paths:
                   properties:
                     password:
                       type: string
-                      example: "arif8322"
+                      example: "Arif@8322"
                 - type: object
                   properties:
                     confirm_password:
                       type: string
-                      example: "arif"
+                      example: "Arif@8322"
               required:
                 - password
                 - confirm_password
