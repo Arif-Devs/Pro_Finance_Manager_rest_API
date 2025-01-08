@@ -5,7 +5,7 @@ import PermissionController from '../api/v1/controller/permission/index.js';
 import RoleController from '../api/v1/controller/role/index.js';
 import {authRequest} from '../request/index.js'
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
-import  {permissionRequest}  from '../request/index.js';
+import  {permissionRequest, RoleRequest}  from '../request/index.js';
 
 
 //Health route
@@ -25,7 +25,7 @@ router.get('/health', (_req, res) =>
 
 //Role route
 router.route('/roles')
-.post(RoleController.create)
+.post(authenticate, authorization(['create-role']), RoleRequest.roleCreateRequest, requestValidator, RoleController.create)
 
 
 

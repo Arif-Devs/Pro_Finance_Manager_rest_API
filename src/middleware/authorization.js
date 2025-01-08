@@ -12,7 +12,7 @@ const authorization = (requiredPermissions = []) => async (req,_res,next) => {
             userPermissions : userPermissions.flat(),
             userRole : role._doc.name
         };
-        if(role._doc.name === 'admin' ||role._doc.name === 'Admin' ||role._doc.name === 'Super-Admin' ||role._doc.name === 'super-admin' ){
+        if(role._doc.name === 'admin' ||role._doc.name === 'Admin' ||role._doc.name === 'Super-Admin' ||role._doc.name === 'super-admin'){
             next();
         }else{
             // Check if the user has any of the requiredPermissions
