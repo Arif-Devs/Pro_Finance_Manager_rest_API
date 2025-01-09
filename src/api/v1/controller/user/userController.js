@@ -20,4 +20,4 @@ const create = async(req, res, next)=>{
 
 
 
-export default create
+export default {create}
