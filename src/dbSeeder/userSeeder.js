@@ -39,7 +39,7 @@ const userSeed = async () => {
     await user.save();
 
     const adminUser = new User({
-      username: "Admin",
+      userName: "Admin",
       email: "admin@email.com",
       password: hashedPassword,
       roleId: adminRole,
