@@ -4,9 +4,8 @@ import authController from '../api/v1/controller/auth/index.js';
 import PermissionController from '../api/v1/controller/permission/index.js';
 import RoleController from '../api/v1/controller/role/index.js';
 import userController from '../api/v1/controller/user/index.js'
-import {authRequest} from '../request/index.js'
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
-import  {permissionRequest, RoleRequest,UserRequest}  from '../request/index.js';
+import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest}  from '../request/index.js';
 
 
 
@@ -18,6 +17,7 @@ router.get('/health', (_req, res) =>
 
 // Auth endpoints
   router.post('/auth/register', authRequest.registerRequestValidator, requestValidator, authController.register )
+  router.post('/auth/login', authRequest.loginRequestValidator, requestValidator, authController.login)
 
 
 //Permission Routes ->
@@ -33,9 +33,10 @@ router.route('/roles')
 
 //user route
 router.route('/users')
-.post(authenticate,authorization(['create-user']), UserRequest.createRequestValidator, requestValidator, userController.create)
-
-
+.post(authenticate, authorization(['create-user']), UserRequest.createRequestValidator, requestValidator, userController.create)
+.get(authenticate, authorization(['read-permission']), queryRequest.basicQueryParams, requestValidator, userController.getAll)
+router.route('/users/:id')
+.get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
 
 
 

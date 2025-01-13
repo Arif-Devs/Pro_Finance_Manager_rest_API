@@ -9,7 +9,7 @@ import { generateSelectedItems, generateSortType } from '../utils/query.js'
 
 
 // Register or create new user
-const registerOrCreateUser = async ({ userName, email, password, phone = '', roleId }) => {
+const registerOrCreateUser = async ({ userName, email, password, phone, roleId  }) => {
     try {
         const hashPassword = await bcrypt.hash(password ? password : DEFAULTPASS, 10);
        
@@ -22,22 +22,26 @@ const registerOrCreateUser = async ({ userName, email, password, phone = '', rol
         const user = new User({
             userName,
             email,
-            phone,
+            phone : phone ? phone : '',
             password: hashPassword,
             roleId: roleId ? roleId : userRole._doc._id,
 
         });
 
         // Generate access & refresh token 
-        const ipAddress = ip.address()
-        const tokens = tokenLibs.generateAccess_RefreshToken({ payload: { ...user. _doc, issuedIp: ipAddress}});
+        const {accessToken, refreshToken} = tokenLibs.generateAccess_RefreshToken({payload: {...user._doc, issuedIp: ip.address()}})
         
-        user.refresh_token = tokens.refreshToken
-        user.issuedIp = ipAddress;
+        user.refresh_token = refreshToken
+        user.issuedIp = ip.address();
         
         await user.save();
+
+        delete user._doc.password
+        delete user._doc.refresh_token
+        delete user._doc.id
+        delete user._doc.__v
+        return {user, accessToken}
         
-        return {user, accessToken: tokens.accessToken}
     } catch (error) {
         throw serverError(error.message)
     }
@@ -56,8 +60,6 @@ const getAllData = async({search, sortBy, sortType, limit, page, role, select, p
         let selectedColumns = generateSelectedItems(select,['_id', 'userName', 'email', 'phone', 'roleId', 'createdAt','updatedAt']);
         let populateFields = generateSelectedItems(populate,['role', 'account', 'expanse', 'income', 'goal'])
        
-        
-        
         // Filter object for search and role
         let filter = {}
         if(search) filter.name = {$regex: search, $options: 'i'}
@@ -73,13 +75,9 @@ const getAllData = async({search, sortBy, sortType, limit, page, role, select, p
             select: 'name'
         }: '')
         
-       
-
         //total count for pagination
         let totalItems = await count(filter)
         
-        
-
         return{
             query,
             totalItems
@@ -90,4 +88,51 @@ const getAllData = async({search, sortBy, sortType, limit, page, role, select, p
 
 }
 
-export default {registerOrCreateUser, getAllData}
+//Get single item
+const getSingleById = async({select, populate, id})=>{
+    
+    try {
+    
+    //generate selected fields and populate options
+    let selectedColumns = generateSelectedItems(select,['_id', 'userName', 'roleId', 'email', 'phone', 'createdAt', 'updatedAt' ])
+    let populateFields = generateSelectedItems(populate,['expanse', 'income', 'role', 'account']);
+   
+    //base query and populate roleId if request
+    let user =await User.findById(id)
+    .select(selectedColumns)
+    .populate(populateFields.includes('role')?{
+        path: 'roleId',
+        select: 'name, createdAt, updatedAt, _id'
+    }: '')
+    
+    
+    user = user._doc
+
+    if(populateFields.includes('expanse')){
+        const expanses = await Expanse.find({userId: id}).exec()
+        user.expanses = expanses
+    }
+
+    if(populateFields.includes('income')){
+        const incomes = await Income.find({userId: id}).exec()
+        user.incomes = incomes
+    }
+
+    if(populateFields.includes('account')){
+        const accounts = await Account.find({userId: id}).exec()
+        user.accounts = accounts
+    }
+
+    if(user){
+        return user
+    }else{
+        throw notFoundError()
+    }
+
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+    
+
+export default {registerOrCreateUser, getAllData, getSingleById}

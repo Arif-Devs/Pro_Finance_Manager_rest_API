@@ -13,9 +13,9 @@ const loginUser = async(userNameOrEmail = '')=>{
             delete user._doc.expiredAt
             delete user._doc.id
             delete user._doc.__v
-            console.log('get data from auth libs : ',user);
-            
             return user
+           
+            
         }catch (error) {
           throw serverError(error.message)
     }

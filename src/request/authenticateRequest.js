@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 import User from '../model/user.js'
+import bcrypt from 'bcrypt'
 
 //validation check for email
 const isEmailUnique = async (email) => {
@@ -67,4 +68,31 @@ const registerRequestValidator = [
         })
 ];
 
-export default {registerRequestValidator};
+const loginRequestValidator = [
+    body('userNameOrEmail')
+    .trim()
+    .custom(async(val)=>{
+        if(!val || !(isUserName() || isEmail())){
+            throw new Error('Invalid credential!')
+        }
+        return true
+    }).bail(),
+    body('password')
+    .trim()
+    .custom(async(val, {req})=>{
+        const user = await User.findOne({
+            $or: [{userName: req.body.userNameOrEmail}, {email: req.body.userNameOrEmail}]
+        })
+        if(!user){
+            return Promise.reject('Invalid credential!')
+        }
+       
+        const hashpass = await bcrypt.compare(val, user.password)
+        if(!hashpass){
+            throw new Error('Invalid credential!')
+        }
+        return true
+    }),
+]
+
+export default {registerRequestValidator, loginRequestValidator};
