@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
 import User from '../model/user.js'
 import Role from '../model/role.js'
+import Expanse from '../model/expanse.js'
+import Income from '../model/income.js'
+import Account from '../model/account.js'
 import { notFoundError, serverError } from '../utils/error.js'
 import {tokenLibs} from './index.js'
 import ip from 'ip'
@@ -109,18 +112,17 @@ const getSingleById = async({select, populate, id})=>{
     user = user._doc
 
     if(populateFields.includes('expanse')){
-        const expanses = await Expanse.find({userId: id}).exec()
-        user.expanses = expanses
+        let expanses = await Expanse.find({userId : id}).exec();
+        user = {...user, expanses}
     }
-
     if(populateFields.includes('income')){
-        const incomes = await Income.find({userId: id}).exec()
-        user.incomes = incomes
+        let incomes = await Income.find({userId : id}).exec();
+        user = {...user , incomes}
     }
 
     if(populateFields.includes('account')){
-        const accounts = await Account.find({userId: id}).exec()
-        user.accounts = accounts
+        let accounts = await Account.find({userId : id}).exec();
+        user = {...user , accounts}
     }
 
     if(user){

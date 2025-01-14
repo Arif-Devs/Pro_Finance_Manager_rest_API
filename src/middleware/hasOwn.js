@@ -1,6 +1,6 @@
 export const hasOwn = (permissions, id, user) => {
   const isAdminRole = ["admin", "Admin", "super-admin", "Super-Admin"].includes(permissions);
-  console.log(isAdminRole);
+ 
   
   if (isAdminRole) return true;
 
@@ -9,6 +9,7 @@ export const hasOwn = (permissions, id, user) => {
       permissions.userPermissions.includes(perm);
     }
   );
+  
 
   if (hasAllRequiredPermission) return true;
 

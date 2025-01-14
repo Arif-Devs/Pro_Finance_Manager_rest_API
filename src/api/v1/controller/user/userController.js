@@ -79,7 +79,7 @@ const getAll = async (req, res, next) => {
 const getUserById = async (req, res, _next) => {
   try {
     const hasPermission = hasOwn(req.permissions, req.params.id, req.user);
-
+    
     // check the user has the right permission
     if (!hasPermission) {
       throw unAuthorizedError(
