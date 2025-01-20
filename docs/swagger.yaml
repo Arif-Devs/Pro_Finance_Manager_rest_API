@@ -1465,7 +1465,7 @@ paths:
             schema:
               allOf:
                 - $ref: "#/components/schemas/account"
-              required: [name, account_details, initial_value]
+              required: [name, accountDetails, initialValue]
       responses:
         "201":
           description: account has been created
@@ -1593,7 +1593,7 @@ paths:
             schema:
               allOf:
                 - $ref: "#/components/schemas/account"
-              required: [name, account_details, initial_value]
+              required: [name, accountDetails, initialValue]
       responses:
         "201":
           description: account has been created.
@@ -1652,7 +1652,7 @@ paths:
             schema:
               allOf:
                 - $ref: "#/components/schemas/account"
-              required: [name, account_details, initial_value]
+              required: [name, accountDetails, initialValue]
       responses:
         "200":
           description: account has been updated!
@@ -3357,10 +3357,10 @@ components:
         name:
           type: string
           example: "ncc bank"
-        account_details:
+        accountDetails:
           type: string
           example: "Account No. 2801385727001"
-        initial_value:
+        initialValue:
           type: integer
           example: "100000"
         userId:
