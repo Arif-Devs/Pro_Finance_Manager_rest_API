@@ -1,3 +1,4 @@
+import User from "../model/user.js"
 import Permission from "../model/permission.js"
 
 const unAuthenticateError = (msg = 'Your Session May Have Expired!') => {
@@ -29,11 +30,18 @@ const permissionRelationCheck = async(id)=>{
     if(!data) throw notFoundError('Permission id not found!')
 }
 
+const userRelationDataCheck = async(id)=>{
+    const data = await User.findById(id).exec()
+    if(!data) throw notFoundError('UserId not found!')
+
+}
+
 export {
     unAuthenticateError,
     serverError,
     notFoundError,
     unAuthorizedError,
-    permissionRelationCheck
+    permissionRelationCheck,
+    userRelationDataCheck
     
 }
