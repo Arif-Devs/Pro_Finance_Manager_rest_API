@@ -4,8 +4,10 @@ import authController from '../api/v1/controller/auth/index.js';
 import PermissionController from '../api/v1/controller/permission/index.js';
 import RoleController from '../api/v1/controller/role/index.js';
 import userController from '../api/v1/controller/user/index.js'
+import accountController from '../api/v1/controller/account/index.js';
+import categoryController from '../api/v1/controller/category/index.js'
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
-import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest}  from '../request/index.js';
+import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest}  from '../request/index.js';
 
 
 
@@ -39,9 +41,16 @@ router.route('/users/:id')
 .get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
 
 
+//account route
+ router.route('/accounts')
+ .post(authenticate , authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
 
 
 
 
+// category route
+router.route('/categories')
+.post(authenticate , authorization(['create-category']), requestValidator, categoryController.create)
 
-export default router;
+
+export default router

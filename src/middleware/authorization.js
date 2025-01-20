@@ -6,9 +6,7 @@ const authorization = (requiredPermissions = []) => async (req,_res,next) => {
     try {
         
         const role = await Role.findById(req.user.roleId).exec();        
-        console.log(role);
         let userPermissions = await permissionLibs.getPermissionsNameBasedOnRoleId(req.user.roleId) || [];
-        
         
         req.permissions = {
             requiredPermissions,

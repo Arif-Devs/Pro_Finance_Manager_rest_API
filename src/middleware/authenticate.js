@@ -11,9 +11,6 @@ const authenticate = (req, res, next)=>{
   }
     const token = authHeader && authHeader.split(' ')[1]
 
-    console.log('Authorization Header:', authHeader);
-    
-    
     if(!token) throw unAuthenticateError('Authorization header is missing or invalid.')
       
 
