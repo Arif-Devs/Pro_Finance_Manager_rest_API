@@ -1,5 +1,7 @@
 import User from "../model/user.js"
 import Permission from "../model/permission.js"
+import Account from "../model/account.js"
+import Category from "../model/category.js"
 
 const unAuthenticateError = (msg = 'Your Session May Have Expired!') => {
     const error = new Error(msg)
@@ -36,12 +38,24 @@ const userRelationDataCheck = async(id)=>{
 
 }
 
+const accountRelationDataCheck = async(id)=>{
+    const data = await Account.findById(id).exec()
+    if(!data) throw notFoundError('account not found')
+}
+
+const categoryRelationDataCheck= async(id)=>{
+    const data = Category.findById(id).exec()
+    if(!data) throw notFoundError('category not found')
+}
+
 export {
     unAuthenticateError,
     serverError,
     notFoundError,
     unAuthorizedError,
     permissionRelationCheck,
-    userRelationDataCheck
+    userRelationDataCheck,
+    accountRelationDataCheck,
+    categoryRelationDataCheck
     
 }
