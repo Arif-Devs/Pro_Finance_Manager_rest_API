@@ -5,4 +5,5 @@ import roleLibs from "./role.js";
 import authLibs from './auth.js'
 import accountLibs from "./account.js";
 import categoryLibs from "./category.js"
-export {UserLibs, tokenLibs, permissionLibs, roleLibs, authLibs, accountLibs, categoryLibs}
+import expanseLibs from './expanse.js'
+export {UserLibs, tokenLibs, permissionLibs, roleLibs, authLibs, accountLibs, categoryLibs, expanseLibs}

@@ -6,8 +6,9 @@ import RoleController from '../api/v1/controller/role/index.js';
 import userController from '../api/v1/controller/user/index.js'
 import accountController from '../api/v1/controller/account/index.js';
 import categoryController from '../api/v1/controller/category/index.js'
+import expanseController from '../api/v1/controller/expanse/index.js'
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
-import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest}  from '../request/index.js';
+import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest, categoryRequest, expanseRequest}  from '../request/index.js';
 
 
 
@@ -50,7 +51,45 @@ router.route('/users/:id')
 
 // category route
 router.route('/categories')
-.post(authenticate , authorization(['create-category']), requestValidator, categoryController.create)
+.post(authenticate , authorization(['create-category']),categoryRequest.createRequestValidator, requestValidator, categoryController.create)
+
+
+
+//expanse route
+
+router.route('/expanses')
+.post(authenticate, authorization(['create-expanse' , 'create-own-expanse']),expanseRequest.expanseCreateRequest, requestValidator, expanseController.create)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 export default router

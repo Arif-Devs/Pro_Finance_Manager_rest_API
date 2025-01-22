@@ -4,6 +4,8 @@ import RoleRequest from "./roleRequest.js";
 import UserRequest from './userRequest.js'
 import queryRequest from "./queryRequest.js";
 import accountRequest from './accountRequest.js'
+import categoryRequest from "./categoryRequest.js";
+import expanseRequest from "./expanseRequest.js";
 
 
 
@@ -13,7 +15,9 @@ export  {
     RoleRequest,
     UserRequest,
     queryRequest,
-    accountRequest
+    accountRequest,
+    categoryRequest,
+    expanseRequest
 
 }
 

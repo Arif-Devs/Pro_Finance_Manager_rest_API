@@ -1394,7 +1394,7 @@ paths:
                                   properties:
                                     amount:
                                       type: integer
-                                      example: 10000
+                                      example: "10000"
                                     note:
                                       type: string
                                       example: internet bill
@@ -1410,7 +1410,7 @@ paths:
                                 properties:
                                   amount:
                                     type: integer
-                                    example: 10000
+                                    example: "10000"
                                   note:
                                     type: string
                                     example: internet bill
@@ -1537,7 +1537,7 @@ paths:
                               properties:
                                 amount:
                                   type: integer
-                                  example: 10000
+                                  example: "10000"
                                 note:
                                   type: string
                                   example: internet bill
@@ -1556,7 +1556,7 @@ paths:
                                   $ref: "#/components/schemas/id"
                                 amount:
                                   type: integer
-                                  example: 10000
+                                  example: "10000"
                                 note:
                                   type: string
                                   example: internet bill
@@ -1815,7 +1815,7 @@ paths:
               properties:
                 amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 note:
                   type: string
                   example: internet bill
@@ -1825,8 +1825,8 @@ paths:
                   $ref: "#/components/schemas/id"
                 accountId:
                   $ref: "#/components/schemas/id"
-                goalId:
-                  $ref: "#/components/schemas/id"
+                # goalId:
+                #   $ref: "#/components/schemas/id"
               required: [amount, userId, accountId]
 
       responses:
@@ -1845,7 +1845,7 @@ paths:
                     properties:
                       amount:
                         type: integer
-                        example: 10000
+                        example: "10000"
                       note:
                         type: string
                         example: internet bill
@@ -1855,8 +1855,8 @@ paths:
                         $ref: "#/components/schemas/id"
                       accountId:
                         $ref: "#/components/schemas/id"
-                      goalId:
-                        $ref: "#/components/schemas/id"
+                      # goalId:
+                      #   $ref: "#/components/schemas/id"
                   - $ref: "#/components/schemas/timestamp"
         "400":
           $ref: "#/components/responses/400"
@@ -1885,7 +1885,7 @@ paths:
                 amount:
                   type: integer
                   format: int32
-                  example: 10000
+                  example: "10000"
                 note:
                   type: string
                   format: string
@@ -1984,7 +1984,7 @@ paths:
               properties:
                 amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 note:
                   type: string
                   example: internet bill
@@ -2220,7 +2220,7 @@ paths:
               properties:
                 amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 note:
                   type: string
                   example: internet bill
@@ -2251,7 +2251,7 @@ paths:
                               #   properties:
                               amount:
                                 type: integer
-                                example: 10000
+                                example: "10000"
                               note:
                                 type: string
                                 example: internet bill
@@ -2290,7 +2290,7 @@ paths:
               properties:
                 amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 note:
                   type: string
                   example: internet bill
@@ -2577,7 +2577,7 @@ paths:
                                     properties:
                                       amount:
                                         type: integer
-                                        example: 10000
+                                        example: "10000"
                                       note:
                                         type: string
                                         example: internet bill
@@ -2637,10 +2637,10 @@ paths:
               properties:
                 taget_amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 save_amount:
                   type: integer
-                  example: 10000
+                  example: "10000"
                 name:
                   type: string
                   example: "internet bill"
@@ -3035,7 +3035,7 @@ paths:
                           example: 15000
                         totalExpanse:
                           type: integer
-                          example: 10000
+                          example: "10000"
                         topFiveExpanseCategory:
                           type: array
                           items:
@@ -3095,7 +3095,7 @@ paths:
                         example: 200000
                       totalexpanse:
                         type: integer
-                        example: 100000
+                        example: "10000"
                       topFiveExpansesCategory:
                         type: array
                         items:
@@ -3161,7 +3161,7 @@ paths:
                           example: 200000
                         totalexpanse:
                           type: integer
-                          example: 100000
+                          example: "10000"
                         topFiveExpansesCategory:
                           type: array
                           items:
@@ -3362,7 +3362,7 @@ components:
           example: "Account No. 2801385727001"
         initialValue:
           type: integer
-          example: "100000"
+          example: "10000"
         userId:
           type: string
           example: "kfj44g75d7d8f9f154f85f45"
@@ -3380,7 +3380,7 @@ components:
       properties:
         amount:
           type: integer
-          example: "1200"
+          example: "10000"
         note:
           type: string
           example: "internet bill"
