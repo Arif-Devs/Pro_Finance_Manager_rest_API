@@ -7,6 +7,7 @@ import userController from '../api/v1/controller/user/index.js'
 import accountController from '../api/v1/controller/account/index.js';
 import categoryController from '../api/v1/controller/category/index.js'
 import expanseController from '../api/v1/controller/expanse/index.js'
+import incomeController from '../api/v1/controller/income/index.js';
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
 import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest, categoryRequest, expanseRequest}  from '../request/index.js';
 
@@ -63,7 +64,9 @@ router.route('/expanses')
 
 
 
-
+//income route
+router.route('/incomes')
+.post(authenticate, authorization(['create-income' , 'create-own-income']), expanseRequest.expanseCreateRequest ,requestValidator, incomeController.create)
 
 
 
