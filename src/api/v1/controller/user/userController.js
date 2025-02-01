@@ -112,4 +112,4 @@ const getUserById = async (req, res, _next) => {
   }
 };
 
-export default { create, getAll, getUserById };
+export { create, getAll, getUserById };
