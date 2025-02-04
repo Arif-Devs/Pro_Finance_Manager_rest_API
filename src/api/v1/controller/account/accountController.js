@@ -38,7 +38,8 @@ const create = async(req, res, next)=>{
 
 const getAll = async(req, res, next)=>{
     try {
-        const {search, sortBy ,sortType, limit, page, user, select, populate} = req.query
+        
+        let {search, sortBy ,sortType, limit, page, user, select, populate} = req.query
 
         limit = +limit || LIMIT
         page = +page || PAGE
@@ -61,7 +62,8 @@ const getAll = async(req, res, next)=>{
             pagination: generatePagination(totalPage, page, totalItems, limit)
 
         }
-        return res.status(200).json(result)
+        
+        return res.status(200).json({result})
     } catch (error) {
         next(error.message)
     }

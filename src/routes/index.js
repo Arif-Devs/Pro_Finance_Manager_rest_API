@@ -46,18 +46,17 @@ router.route('/users/:id')
 //account route
  router.route('/accounts')
  .post(authenticate , authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
-
+ .get(authenticate , authorization(['read-account']), queryRequest.basicQueryParams , requestValidator,accountController.getAll)
 
 
 
 // category route
 router.route('/categories')
 .post(authenticate , authorization(['create-category']),categoryRequest.createRequestValidator, requestValidator, categoryController.create)
-
+.get(authenticate , authorization(['read-category']),queryRequest.basicQueryParams, requestValidator, categoryController.getAllCategories)
 
 
 //expanse route
-
 router.route('/expanses')
 .post(authenticate, authorization(['create-expanse' , 'create-own-expanse']),expanseRequest.expanseCreateRequest, requestValidator, expanseController.create)
 

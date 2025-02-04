@@ -1,3 +1,3 @@
-import create  from "./categoryController.js";
+import {create, getAllCategories}  from "./categoryController.js";
 
-export default {create}
+export default {create, getAllCategories}

@@ -38,4 +38,7 @@ const createExpanse = async({amount, note, categoryId, accountId, userId})=>{
     }
 }
 
+//get all expanse
+
+
 export default {createExpanse, checkRelationData}
