@@ -3639,14 +3639,14 @@ components:
         example: "58vfh254fe479dgr25d478dg26g77"
     min:
       in: query
-      name: min-price
+      name: min_price
       description: get data based on minimum value
       schema:
         type: integer
         example: 1000
     max:
       in: query
-      name: max-price
+      name: max_price
       description: get data based on maximum value
       schema:
         type: integer
