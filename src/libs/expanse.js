@@ -2,6 +2,8 @@ import Expanse from "../model/expanse.js";
 import { accountRelationDataCheck, userRelationDataCheck,categoryRelationDataCheck, serverError } from "../utils/error.js";
 import {generateSelectedItems, generateSortType} from '../utils/query.js'
 
+
+
 const checkRelationData = async(userId, categoryId, accountId, authUserId )=>{
     if(userId){
         await userRelationDataCheck(userId)
@@ -18,6 +20,9 @@ const checkRelationData = async(userId, categoryId, accountId, authUserId )=>{
     }
 }
 
+const countExpanse= (data)=>{
+    return Expanse.countDocuments(data)
+}
 
 //create expanse
 const createExpanse = async({amount, note, categoryId, accountId, userId})=>{
@@ -39,6 +44,8 @@ const createExpanse = async({amount, note, categoryId, accountId, userId})=>{
     }
 }
 
+
+
 //get all expanse
 
 const getAll = async({limit, page, sortType, sortBy, search, user, select, populate, account, category, min_price, max_price, fromDate, toDate})=>{
@@ -47,7 +54,7 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
         const selectFields = generateSelectedItems(select['_id', 'amount', 'categoryId', 'userId','accountId', 'note', 'createdAt', 'updatedAt'])
         const populateFields = generateSelectedItems(populate['user', 'category', 'account'])
 
-        let filter = {}
+        const filter = {}
         if(search) filter.note = {$regex : search , $options : 'i'}
         if(user) filter.userId = user
         if(account) filter.accountId = account
@@ -64,24 +71,43 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
         }
         
         if(fromDate || toDate){
-            filter.update = {}
+            filter.updatedAt = {}
             if(fromDate){
-                filter.update.$gte = new Date(fromDate)
+                filter.updatedAt.$gte = new Date(fromDate)
             }
             if(toDate){
-                filter.update.$lte = new Date(toDate)
+                filter.updatedAt.$lte = new Date(toDate)
             }
         }
 
+        const query = await Expanse.find(filter)
+            .select(selectFields)
+            .sort({[sortBy]: sortTypeForDB})
+            .skip(page * limit - limit)
+            .limit(limit)
+            .populate(populateFields.includes('user')?{
+                path: 'userId',
+                select: 'userName, email, phone, roleId, createdAt, updatedAt'
+            }: '')
+            .populate(populateFields.includes('category')?{
+                path: 'categoryId',
+                select: 'name, slug, createdAt, updatedAt, _id'
+            }: '')
+            .populate(populateFields.includes('account')?{
+                path : 'accountId',
+                select: 'name, account_details, createdAt, updatedAt, _id'
+            }: '')
 
+            const totalItems = await countExpanse(filter)
 
-
-
-
-
+            return{
+                query,
+                totalItems
+            }
         
-    } catch (error) {
-        
+                
+     } catch (error) {
+        throw serverError(error) 
     }
 }
 
@@ -102,4 +128,10 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
 
 
 
-export default {createExpanse, checkRelationData}
+
+
+
+
+
+
+export default {createExpanse, checkRelationData, getAll}

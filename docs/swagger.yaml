@@ -1730,9 +1730,10 @@ paths:
         - $ref: "#/components/parameters/populate"
         - $ref: "#/components/parameters/select"
         - $ref: "#/components/parameters/user"
-        - $ref: "#/components/parameters/goal"
         - $ref: "#/components/parameters/account"
         - $ref: "#/components/parameters/category"
+        - $ref: "#/components/parameters/fromDate"
+        - $ref: "#/components/parameters/toDate"
         - $ref: "#/components/parameters/min"
         - $ref: "#/components/parameters/max"
       responses:
@@ -1764,11 +1765,7 @@ paths:
                           properties:
                             user:
                               $ref: "#/components/schemas/user"
-                        - type: object
-                          properties:
-                            goal:
-                              $ref: "#/components/schemas/goal"
-                        - $ref: "#/components/schemas/timestamp"
+
                         - type: object
                           properties:
                             link:
@@ -2532,8 +2529,8 @@ paths:
         - $ref: "#/components/parameters/select"
         - $ref: "#/components/parameters/user"
         - $ref: "#/components/parameters/status"
-        - $ref: "#/components/parameters/fromdate"
-        - $ref: "#/components/parameters/todate"
+        - $ref: "#/components/parameters/fromDate"
+        - $ref: "#/components/parameters/toDate"
       responses:
         "200":
           description: Retrive all Goals according to search params with pagination
@@ -3003,8 +3000,8 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/fromdate"
-        - $ref: "#/components/parameters/todate"
+        - $ref: "#/components/parameters/fromDate"
+        - $ref: "#/components/parameters/toDate"
       responses:
         "200":
           description: data retrive success
@@ -3129,8 +3126,8 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/fromdate"
-        - $ref: "#/components/parameters/todate"
+        - $ref: "#/components/parameters/fromDate"
+        - $ref: "#/components/parameters/toDate"
         - $ref: "#/components/parameters/financialstate"
       responses:
         "200":
@@ -3528,17 +3525,17 @@ components:
       schema:
         type: string
         example: "poor"
-    fromdate:
+    fromDate:
       in: query
-      name: fromdate
+      name: fromDate
       description: Get data from begining of a date to current
       schema:
         type: string
         format: datetime
         example: "2024-07-20T02:14:06.058Z"
-    todate:
+    toDate:
       in: query
-      name: todate
+      name: toDate
       description: Get data from end of a date
       schema:
         type: string
