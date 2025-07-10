@@ -135,6 +135,30 @@ const getSingleById = async({select, populate, id})=>{
         throw serverError(error)
     }
 }
-    
 
-export default {registerOrCreateUser, getAllData, getSingleById}
+//update user patch
+const updateByPatch = async(id, userName, email, phone, roleId)=>{
+    try {
+        const updateUser =await User.findById(id).exec();
+        if(!updateUser) throw new Error('User not found!');
+        
+        updateUser.userName = userName ? userName : updateUser.updateUser;
+        updateUser.email = email ? email : updateUser.email;
+        updateUser.phone = phone ? phone : updateUser.phone;
+        updateUser.roleId = roleId ? roleId : updateUser.roleId;   
+
+        await updateUser.save();
+
+        delete updateUser._doc.password
+        delete updateUser._doc.refresh_token
+        delete updateUser._doc.id
+        delete updateUser._doc.__v
+        
+        return updateUser._doc
+    
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch}

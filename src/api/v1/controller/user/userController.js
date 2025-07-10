@@ -112,4 +112,34 @@ const getUserById = async (req, res, _next) => {
   }
 };
 
-export { create, getAll, getUserById };
+//Update user patch
+
+const updateUserByPatch = async(req, res, next)=>{
+  try {
+    const hasPermission = hasOwn(req.permissions, req.params.id, req.user)
+
+    if(hasPermission){
+      const {id} = req.params
+      const {userName, email, phone, roleId} = req.body
+
+      const user = await UserLibs.updateByPatch(id, userName, email, phone, roleId)
+      
+      const result = {
+        code: 200,
+        message: "user update success",
+        data:{
+          ...user
+        }
+
+      }
+      return res.status(200).json(result)
+
+    } else{
+      throw unAuthorizedError('You do not have right permission to change any data')
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export { create, getAll, getUserById, updateUserByPatch };

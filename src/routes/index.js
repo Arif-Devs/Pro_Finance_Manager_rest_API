@@ -10,6 +10,7 @@ import expanseController from '../api/v1/controller/expanse/index.js'
 import incomeController from '../api/v1/controller/income/index.js';
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
 import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest, categoryRequest, expanseRequest}  from '../request/index.js';
+import userRequest from '../request/userRequest.js';
 
 
 
@@ -41,7 +42,7 @@ router.route('/users')
 .get(authenticate, authorization(['read-permission']), queryRequest.basicQueryParams, requestValidator, userController.getAll)
 router.route('/users/:id')
 .get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
-
+.patch(authenticate, authorization(['update-user' , 'update-own-user']), userRequest.UpdatePatchRequestValidator, requestValidator, userController.updateUserByPatch)
 
 //account route
  router.route('/accounts')
