@@ -115,23 +115,4 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export default {createExpanse, checkRelationData, getAll}

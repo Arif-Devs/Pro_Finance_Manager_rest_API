@@ -1,5 +1,10 @@
 import {serverError} from '../utils/error.js'
 import Income from '../model/income.js'
+import { generateSelectedItems, generateSortType } from '../utils/query.js'
+
+
+
+
 const createIncome = async({note, amount, accountId, userId, categoryId})=>{
     try {
         const income = new Income({
@@ -18,4 +23,68 @@ const createIncome = async({note, amount, accountId, userId, categoryId})=>{
     }
 }
 
-export default {createIncome}
+const countIncome= (data)=>{
+    return Income.countDocuments(data)
+}
+
+//get all income
+const getAll = async({limit, page, sortType, sortBy, search, user, select, populate, account, category, min_price, max_price, fromDate, toDate}) =>{
+
+try {
+    let sortTypeForDB = generateSortType(sortType);
+    let selectFields = generateSelectedItems(select,['_id','amount','categoryId','userId','accountId', 'note' ,'createdAt' , 'updatedAt'])
+    let populateFields = generateSelectedItems(populate,['user', 'category', 'account'])
+
+    let filter = {}
+    if(search) filter.note = {$regex : search , $options : 'i'}
+    if(user) filter.userId = user
+    if(account) filter.accountId = account
+    if(category) filter.categoryId = category
+
+     if (min_price || max_price) {
+        filter.amount = {};   
+        if (min_price) {
+          filter.amount.$gte = min_price;
+        }
+      
+        if (max_price) {
+          filter.amount.$lte = max_price;
+        }
+      }
+      if(fromDate || toDate){
+        filter.updatedAt = {}
+        if(fromDate) filter.updatedAt.$gte = new Date(fromDate)
+        if(toDate) filter.updatedAt.$lte = new Date(toDate)
+      }
+     let income = await Income.find(filter)
+        .select(selectFields)
+        .sort({[sortBy] : sortTypeForDB})
+        .skip(page * limit - limit)
+        .limit(limit)
+        .populate(populateFields.includes('user') ? {
+            path   : 'userId',
+            select : 'username , email , phone , roleId, createdAt , updatedAt',
+        } : '')
+        .populate(populateFields.includes('category') ? {
+            path   : 'categoryId',
+            select : 'name , slug , createdAt , updatedAt , _id',
+        } : '')
+        .populate(populateFields.includes('account') ? {
+            path   : 'accountId',
+            select : 'name , account_details createdAt , updatedAt , _id',
+        } : '')
+        
+        
+        let totalItems = await countIncome(filter) ;
+
+        return {
+            income,
+            totalItems
+        }
+
+    } catch (error) {
+        throw serverError(error.message)
+    }
+}
+
+export default {createIncome, getAll}
