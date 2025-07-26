@@ -43,6 +43,9 @@ router.route('/users')
 router.route('/users/:id')
 .get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
 .patch(authenticate, authorization(['update-user' , 'update-own-user']), userRequest.UpdatePatchRequestValidator, requestValidator, userController.updateUserByPatch)
+.put(authenticate ,  authorization(['update-user' , 'update-own-user']) , userController.updateByPut)
+
+
 
 //account route
  router.route('/accounts')

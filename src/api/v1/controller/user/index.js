@@ -1,3 +1,3 @@
-import {create, getAll, getUserById, updateUserByPatch} from "./userController.js";
+import {create, getAll, getUserById, updateUserByPatch, updateByPut} from "./userController.js";
 
-export default {create, getAll, getUserById, updateUserByPatch} 
+export default {create, getAll, getUserById, updateUserByPatch, updateByPut} 

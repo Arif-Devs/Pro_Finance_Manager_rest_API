@@ -142,4 +142,32 @@ const updateUserByPatch = async(req, res, next)=>{
   }
 }
 
-export { create, getAll, getUserById, updateUserByPatch };
+//Update by put
+  const updateByPut = async (req,res,next) => {
+
+    try {
+      const hasPermit = hasOwn(req.permissions, req.params.id , req.user);
+    if(hasPermit){
+        const {username,email,phone,roleId,password,confirm_password} = req.body;
+        const {id} = req.params;
+        const {user , accessToken , state} = await UserLibs.updateByPUT(id,username,email,phone,roleId,password,confirm_password)
+
+        const result = state === 'create' ? {...user, accessToken} : {...user}
+
+        res.status(state === 'create' ? 201 : 200).json({
+            code : state === 'create' ? 201 : 200,
+            message : `User ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+            data : {
+                ...result,
+            }
+        })
+    }else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+    } catch (error) {
+      next(error)
+    }
+    
+}
+
+export { create, getAll, getUserById, updateUserByPatch, updateByPut };

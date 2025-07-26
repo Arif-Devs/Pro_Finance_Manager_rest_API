@@ -161,4 +161,42 @@ const updateByPatch = async(id, userName, email, phone, roleId)=>{
     }
 }
 
-export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch}
+//update user by put
+const updateUserPut = async(id,userName,email,phone,roleId,password,confirm_password) =>{
+    try {
+        const updateUser = await User.findById(id).exec()
+
+        if(!updateUser){
+            if(userName) throw new Error("User name is required!")
+            if(email) throw new Error('email is required')    
+            const {user, accessToken} = await registerOrCreateUser({userName, email, password, confirm_password, phone, roleId })
+            return{
+                user: user._doc,
+                accessToken,
+                state: 'create'
+            }
+
+        }else{
+            updateUser.userName = userName ? userName : updateUser.userName;
+            updateUser.email = email ? email : updateUser.email;
+            updateUser.phone = phone ? phone : updateUser.phone;
+            updateUser.roleId = roleId ? roleId : updateUser.roleId;
+            
+            await updateUser.save();
+            delete updateUser._doc.password
+            delete updateUser._doc.refresh_token
+            delete updateUser._doc.id
+            delete updateUser._doc.__v
+            
+            return {
+                user : updateUser._doc,
+                accessToken : '',
+                state : 'update'
+            }
+        }
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch, updateUserPut}

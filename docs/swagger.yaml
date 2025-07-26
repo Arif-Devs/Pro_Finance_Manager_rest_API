@@ -183,11 +183,11 @@ paths:
             schema:
               type: object
               properties:
-                userNamrOrEmail:
+                userNameOrEmail:
                   type: string
                   example: arif@example.com
               required:
-                - userNamrOrEmail
+                - userNameOrEmail
 
       responses:
         "200":
@@ -331,7 +331,7 @@ paths:
                         $ref: "#/components/schemas/id"
                   - $ref: "#/components/schemas/user"
                   - $ref: "#/components/schemas/token"
-                  - $ref: "#/components/schemas/timesteamp"
+                  - $ref: "#/components/schemas/timestamp"
 
         "400":
           $ref: "#/components/responses/400"
@@ -398,7 +398,7 @@ paths:
                         format: url
                         example: /users/search?q=test&page=1&limit=10&status=active
                       nextPage:
-                        type: stiring
+                        type: string
                         format: url
                         example: /users/2/search?q=test&page=2&limit=10
                       prevPage:
@@ -417,6 +417,91 @@ paths:
         "403":
           $ref: "#/components/responses/403"
   "/users/{id}":
+    put:
+      description: Profile Update for Auth user
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: arif
+                email:
+                  type: string
+                  format: email
+                  example: arif@example.com
+                phone:
+                  type: string
+                  example: "01715895560"
+              required:
+                - username
+                - email
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Profile Updated Successfully Completed.
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/user"
+                      - $ref: "#/components/schemas/timestamp"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /users/{userId}
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Profile Created Successfully Completed.
+                  data:
+                    allOf:
+                      - $ref: "#/components/schemas/user"
+                      - $ref: "#/components/schemas/timestamp"
+                      - type: object
+                        properties:
+                          link:
+                            type: string
+                            format: url
+                            example: /users/{userId}
+        "400":
+          $ref: "#/components/responses/400"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
     patch:
       description: profile update for authenticated user
       tags: [User]
@@ -497,7 +582,7 @@ paths:
                   message:
                     type: string
                     format: int32
-                    example: account delete successfull!
+                    example: account delete successful!
 
         "401":
           $ref: "#/components/responses/401"
@@ -638,7 +723,7 @@ paths:
       tags: [Role]
       security:
         - bearerAuth: []
-        - efreshTokenHeader: []
+        - refreshTokenHeader: []
       parameters:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/limit"
