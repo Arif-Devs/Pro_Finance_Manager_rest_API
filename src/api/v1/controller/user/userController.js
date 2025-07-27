@@ -170,4 +170,26 @@ const updateUserByPatch = async(req, res, next)=>{
     
 }
 
-export { create, getAll, getUserById, updateUserByPatch, updateByPut };
+const deleteById = async (req,res,next) => { 
+
+  try {
+      const hasPermit = hasOwn(req.permissions, req.params.id , req.user);
+      if(hasPermit){
+      const {id} = req.params;
+      const isDeleted = await UserLibs.deleteById(id);
+      if(isDeleted){
+          res.status(204).json({
+              code : 204,
+              message : 'User Deleted Successfully!',
+          })
+      }
+  }else{
+    throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+  }
+    } catch (error) {
+      next(error)
+    }
+    
+};
+
+export { create, getAll, getUserById, updateUserByPatch, updateByPut, deleteById };

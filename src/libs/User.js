@@ -199,4 +199,21 @@ const updateUserPut = async(id,userName,email,phone,roleId,password,confirm_pass
     }
 }
 
-export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch, updateUserPut}
+const deleteById = async (id) => {
+    try {
+        const user = await User.findOne({_id : id}).exec();
+        if(!user) {
+            throw notFoundError();
+        }else{
+            await Expanse.deleteMany({userId: id}).exec()
+            await Income.deleteMany({userId: id}).exec()
+            await Account.deleteMany({userId: id}).exec()
+            await user.deleteOne()
+            return true;
+        }
+    } catch (error) {
+       throw serverError(error) 
+    }
+};
+
+export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch, updateUserPut, deleteById}

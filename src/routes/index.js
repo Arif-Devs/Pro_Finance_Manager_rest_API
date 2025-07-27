@@ -44,7 +44,7 @@ router.route('/users/:id')
 .get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
 .patch(authenticate, authorization(['update-user' , 'update-own-user']), userRequest.UpdatePatchRequestValidator, requestValidator, userController.updateUserByPatch)
 .put(authenticate ,  authorization(['update-user' , 'update-own-user']) , userController.updateByPut)
-
+.delete(authenticate ,  authorization(['delete-user' , 'delete-own-user']) ,userController.deleteById)
 
 
 //account route
