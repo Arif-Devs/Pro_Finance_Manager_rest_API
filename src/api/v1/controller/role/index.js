@@ -1,3 +1,3 @@
-import create from "./roleController.js";
+import {create, getAll} from "./roleController.js";
 
-export default {create}
+export default {create, getAll}

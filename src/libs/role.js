@@ -47,4 +47,52 @@ const create = async(name, permissions)=>{
     }
 }
 
-export default {create}
+//get all roles
+
+const getAll = async ({search, sortBy ,sortType, limit , page}) => {
+    try {
+         // populate sortType val for query
+          let sortTypeForDB = generateSortType(sortType);
+          
+          // destructured filter options for query
+          let filter = {}
+          if(search) filter.name = {$regex : search , $options : 'i'}
+
+          // send request to db with all query params
+          let roles = await Role.find(filter)
+          .sort({[sortBy] : sortTypeForDB})
+          .skip(page * limit - limit)
+          .limit(limit)
+          
+
+          // count total roles based on search query params only, not apply on pagination
+          let totalItems = await countRole(filter) ;
+
+          // get permissions for associated roles
+          const updatedRoles = await Promise.all(roles.map(async (role) => {
+              const permissionIds = await PermissionLibs.getPermissionsBasedOnRoleId(role._id);
+              
+              let permissions = await Promise.all(permissionIds.map(async (id) => {
+                const data = await Permission.findById(id).select(['name', '_id', 'createdAt', 'updatedAt']).exec();
+                return {
+                  ...(data ? data._doc : {}), 
+                };
+              }));
+
+              return {
+                ...(role && role._doc ? { ...role._doc } : {}),
+                permissions,
+              };
+          }));
+
+          return {
+              updatedRoles,
+              totalItems
+          }
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+
+export default {create, getAll}
