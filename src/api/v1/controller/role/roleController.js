@@ -56,5 +56,45 @@ const getAll = async (req,res,next) => {
    }
 }
 
+//update by patch
 
-export  {create, getAll}
+const updateByPatch = async (req,res,next) => {
+    try {
+        const { id } = req.params;
+        const {name, permissions} = req.body;
+
+        const {updatedRole , permissionsArray} = await roleLibs.updateByPatch(id,name,permissions)
+        return res.status(200).json({
+            code : 200,
+            message : 'Role Updated Successfully!',
+            data : {
+                ...updatedRole._doc,
+                permissions : permissionsArray
+            }
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
+// Delete Single Role 
+const deleteById = async (req,res,next) => {
+
+  try {
+    const {id} = req.params;
+    const isDeleted = await RoleLibs.deleteById(id);
+    if(isDeleted){
+        res.status(204).json({
+            code : 204,
+            message : 'Role & Associated Permissions are Deleted Successfully!',
+        })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
+
+export  {create, getAll, updateByPatch, deleteById}

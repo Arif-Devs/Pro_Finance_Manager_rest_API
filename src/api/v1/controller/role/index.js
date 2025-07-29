@@ -1,3 +1,3 @@
-import {create, getAll} from "./roleController.js";
+import {create, getAll, updateByPatch, deleteById} from "./roleController.js";
 
-export default {create, getAll}
+export default {create, getAll, updateByPatch, deleteById}

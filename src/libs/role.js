@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { permissionLibs } from "./index.js";
 import Permission from "../model/permission.js";
 import { permissionRelationCheck } from "../utils/error.js";
+import { de } from "date-fns/locale";
 
 const count= (data)=>{
     return Role.countDocuments(data)
@@ -100,5 +101,57 @@ const getAll = async ({search, sortBy ,sortType, limit , page}) => {
     }
 }
 
+const updateByPatch = async (id,name,permissions=[]) => {
+    try {
+      const updatedRole = await Role.findById(id).exec();
+      if(!updatedRole) throw new Error('Role Not Found!')
+      updatedRole.name = name ? name : updatedRole.name;
+      await updatedRole.save();
+    
+      let permissionsArray = [];
+      const permissionIds = await PermissionLibs.getPermissionsBasedOnRoleId(id);
+      const updatedPermissions = await PermissionLibs.updatePermissionsByRoleId(id, permissionIds, permissions);
+    
+      if(updatedPermissions.length > 0){
+        permissionsArray = await Promise.all(updatedPermissions.map(async(item) => {
+          const data = await Permission.findById(item).select(['name', '_id', 'createdAt', 'updatedAt']).exec();
+              return {
+                  ...(data ? data._doc : {}), 
+              };
+          })
+      );
+      } 
+      return {
+        updatedRole,
+        permissionsArray
+      }
+    } catch (error) {
+       throw serverError(error) 
+    }
+}
 
-export default {create, getAll}
+// Delete Single Role 
+const deleteById = async (id) => {
+    try {
+      const role = await Role.findOne({_id : id}).exec();
+      if(!role) {
+          throw notFoundError();
+      }else{
+        if(role.name === 'admin' || role.name === 'super-admin' || role.name === 'user') 
+        throw new Error('Can not Delete this Role')
+        else {
+          await PermissionRole.deleteMany({roleId : id});
+          await role.deleteOne()
+          return true;
+        }
+      }
+    } catch (error) {
+        throw serverError(error)
+    }
+};
+
+
+
+
+
+export default {create, getAll, updateByPatch, deleteById}

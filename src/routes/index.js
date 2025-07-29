@@ -34,6 +34,9 @@ router.get('/health', (_req, res) =>
 router.route('/roles')
 .post(authenticate, authorization(['create-role']), RoleRequest.roleCreateRequest, requestValidator, RoleController.create)
 .get(authenticate , authorization(['read-role']), queryRequest.basicQueryParams , requestValidator,  RoleController.getAll)
+router.route('/roles/:id')
+.patch(authenticate , authorization(['update-role']) ,  RoleRequest.roleUpdateRequest , requestValidator, RoleController.updateByPatch)
+.delete(authenticate , authorization(['delete-role']) ,  RoleController.deleteById)
 
 
 //user route
