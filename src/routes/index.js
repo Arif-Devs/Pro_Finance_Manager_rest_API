@@ -33,7 +33,7 @@ router.get('/health', (_req, res) =>
 //Role route
 router.route('/roles')
 .post(authenticate, authorization(['create-role']), RoleRequest.roleCreateRequest, requestValidator, RoleController.create)
-.get(authenticate , authorization(['read-role']) , queryRequest.basicQueryParams , requestValidator,  RoleController.getAll)
+.get(authenticate , authorization(['read-role']), queryRequest.basicQueryParams , requestValidator,  RoleController.getAll)
 
 
 //user route
