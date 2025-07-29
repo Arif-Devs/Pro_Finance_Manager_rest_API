@@ -5,6 +5,12 @@ import { permissionLibs } from "./index.js";
 import Permission from "../model/permission.js";
 import { permissionRelationCheck } from "../utils/error.js";
 
+const count= (data)=>{
+    return Role.countDocuments(data)
+}
+
+
+
 //Create role and associate with permission
 
 const create = async(name, permissions)=>{
@@ -66,7 +72,7 @@ const getAll = async ({search, sortBy ,sortType, limit , page}) => {
           
 
           // count total roles based on search query params only, not apply on pagination
-          let totalItems = await countRole(filter) ;
+          let totalItems = await count(filter) ;
 
           // get permissions for associated roles
           const updatedRoles = await Promise.all(roles.map(async (role) => {
