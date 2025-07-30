@@ -27,8 +27,8 @@ router.get('/health', (_req, res) =>
 
 //Permission Routes ->
  router.route('/permissions')  
-  .post( authenticate, authorization(['create-permission']), permissionRequest.permissionCreateRequest,requestValidator,PermissionController.create)
-
+.post( authenticate, authorization(['create-permission']), permissionRequest.permissionCreateRequest,requestValidator,PermissionController.create)
+.get(authenticate, authorization(['read-permission']), queryRequest.basicQueryParams,requestValidator,PermissionController.getAll)
 
 //Role route
 router.route('/roles')

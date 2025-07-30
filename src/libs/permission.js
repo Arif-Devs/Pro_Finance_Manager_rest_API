@@ -1,6 +1,7 @@
 import Permission from '../model/permission.js';
 import { notFoundError, serverError } from '../utils/error.js';
 import PermissionRole from '../model/permissionRole.js';
+import { generateSortType } from '../utils/query.js';
 
 
 
@@ -44,6 +45,41 @@ const getPermissionsNameBasedOnRoleId = async (roleId) => {
   }
 };
 
+const count= (data)=>{
+    return Role.countDocuments(data)
+}
+
+
+//get all permission
+const getAll = async ({search, sortBy ,sortType, limit , page}) => {
+    try {
+        // populate sortType val for query
+        let sortTypeForDB = generateSortType(sortType);
+        
+        // destructured filter options for query
+        let filter = {}
+        if(search) filter.name = {$regex : search , $options : 'i'}
+
+        // send request to db with all query params
+        let query = await Permission.find(filter)
+        .sort({[sortBy] : sortTypeForDB})
+        .skip(page * limit - limit)
+        .limit(limit)
+        
+
+        // count total permissions based on search query params only, not apply on pagination
+        let totalItems = await count(filter) ;
+
+        return {
+            query : query.length > 0 ? query : [],
+            totalItems
+        }
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+
 
 
 
@@ -51,7 +87,7 @@ export default {
   
   createPermission,
   getPermissionsNameBasedOnRoleId,
-  
+  getAll
 };
   
  

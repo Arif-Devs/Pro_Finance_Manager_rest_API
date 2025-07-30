@@ -1,3 +1,3 @@
-import create from "./permissionController.js";
+import {create, getAll} from "./permissionController.js";
 
-export default create
+export default {create, getAll}

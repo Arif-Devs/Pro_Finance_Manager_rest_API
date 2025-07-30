@@ -26,6 +26,7 @@ const create = async (req,res,next)=>{
 const getAll = async (req,res,next) => {
 
    try {
+    
     let {limit,page,sortType,sortBy,search} = req.query;
 
    // set default search params   
