@@ -44,4 +44,26 @@ const getAll = async (req,res,next) => {
 }
 
 
-export  {create, getAll}
+// Update or Create Permission to DB
+const updateByPut = async (req,res,next) => {
+  try {
+      const {name} = req.body;
+    const {id} = req.params;
+    const {permission , state} = await permissionLibs.updateByPut(id,name)
+
+    res.status(state === 'create' ? 201 : 200).json({
+        code : state === 'create' ? 201 : 200,
+        message : `Permission ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+        data : {...permission}
+    })
+    } catch (error){
+        next(error)
+    }
+    
+  
+}
+
+
+
+
+export  {create, getAll, updateByPut}

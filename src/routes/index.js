@@ -29,6 +29,10 @@ router.get('/health', (_req, res) =>
  router.route('/permissions')  
 .post( authenticate, authorization(['create-permission']), permissionRequest.permissionCreateRequest,requestValidator,PermissionController.create)
 .get(authenticate, authorization(['read-permission']), queryRequest.basicQueryParams,requestValidator,PermissionController.getAll)
+router.route('/permissions/:id')
+.put(authenticate , authorization(['update-permission']) , permissionRequest.permissionUpdatePUTRequest , requestValidator, PermissionController.updateByPut)
+
+
 
 //Role route
 router.route('/roles')

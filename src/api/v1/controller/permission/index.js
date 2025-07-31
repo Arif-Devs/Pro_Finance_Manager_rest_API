@@ -1,3 +1,3 @@
-import {create, getAll} from "./permissionController.js";
+import {create, getAll, updateByPut} from "./permissionController.js";
 
-export default {create, getAll}
+export default {create, getAll, updateByPut}

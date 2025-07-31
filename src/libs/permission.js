@@ -80,6 +80,29 @@ const getAll = async ({search, sortBy ,sortType, limit , page}) => {
 }
 
 
+// Update or Create Permission to DB
+const updateByPut = async (id,name) => {
+    try {
+        let permission = await Permission.findById(id);
+        let state;
+
+        if(!permission){
+            const data = await Permission.findOne({name}).exec();
+            if(data) throw notFoundError('Permission already exits!')
+            permission = new Permission();
+            permission.name = name;
+            state = 'create'
+        }else{
+        permission.name = name; 
+        state = 'update'
+        }
+        await permission.save();
+        return {permission : permission._doc , state};
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
 
 
 
@@ -87,7 +110,8 @@ export default {
   
   createPermission,
   getPermissionsNameBasedOnRoleId,
-  getAll
+  getAll,
+  updateByPut
 };
   
  
