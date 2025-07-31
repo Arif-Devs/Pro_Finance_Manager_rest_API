@@ -17,7 +17,8 @@ const create = async (req, res, next)=>{
 
 const getAll = async (req,res,next) => {
    
-    let {limit,page,sortType,sortBy,search} = req.query;
+   try {
+     let {limit,page,sortType,sortBy,search} = req.query;
 
    // set default search params   
    limit = +limit || LIMIT
@@ -41,6 +42,9 @@ const getAll = async (req,res,next) => {
     }
 
     return res.status(200).json(result)
+   } catch (error) {
+    next(error)
+   }
 }
 
 
