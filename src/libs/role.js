@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { permissionLibs } from "./index.js";
 import Permission from "../model/permission.js";
 import { permissionRelationCheck } from "../utils/error.js";
-import { de } from "date-fns/locale";
+
 
 const count= (data)=>{
     return Role.countDocuments(data)
@@ -45,7 +45,7 @@ const create = async(name, permissions)=>{
             }
         }
 
-        const permissionIds = await permissionLibs.getPermissionsNameBasedOnRoleId(role._id)
+        const permissionIds = await permissionLibs.getPermissionsBasedOnRoleId(role._id)
         return{role: role.toJSON(), permission: permissionIds}
 
 
@@ -77,7 +77,7 @@ const getAll = async ({search, sortBy ,sortType, limit , page}) => {
 
           // get permissions for associated roles
           const updatedRoles = await Promise.all(roles.map(async (role) => {
-              const permissionIds = await PermissionLibs.getPermissionsBasedOnRoleId(role._id);
+              const permissionIds = await permissionLibs.getPermissionsBasedOnRoleId(role._id);
               
               let permissions = await Promise.all(permissionIds.map(async (id) => {
                 const data = await Permission.findById(id).select(['name', '_id', 'createdAt', 'updatedAt']).exec();
@@ -109,8 +109,8 @@ const updateByPatch = async (id,name,permissions=[]) => {
       await updatedRole.save();
     
       let permissionsArray = [];
-      const permissionIds = await PermissionLibs.getPermissionsBasedOnRoleId(id);
-      const updatedPermissions = await PermissionLibs.updatePermissionsByRoleId(id, permissionIds, permissions);
+      const permissionIds = await permissionLibs.getPermissionsBasedOnRoleId(id);
+      const updatedPermissions = await permissionLibs.updatePermissionsByRoleId(id, permissionIds, permissions);
     
       if(updatedPermissions.length > 0){
         permissionsArray = await Promise.all(updatedPermissions.map(async(item) => {

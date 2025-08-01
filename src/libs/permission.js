@@ -1,32 +1,26 @@
-import Permission from '../model/permission.js';
-import { notFoundError, serverError } from '../utils/error.js';
-import PermissionRole from '../model/permissionRole.js';
-import { generateSortType } from '../utils/query.js';
+import Permission from "../model/permission.js";
+import { notFoundError, serverError } from "../utils/error.js";
+import PermissionRole from "../model/permissionRole.js";
+import { generateSortType } from "../utils/query.js";
 
-
-
-//Create Permission 
+//Create Permission
 
 const createPermission = async (name) => {
   try {
-    
     const permission = new Permission({ name }); // Create the new permission document
     await permission.save(); // Save the permission to the database
-    
+
     return permission._doc; // return individual records from the database
-  
   } catch (error) {
     throw serverError(error);
   }
 };
 
-
-
 const getPermissionsNameBasedOnRoleId = async (roleId) => {
   try {
     // Retrieve distinct permissionIds associated with the roleId
     const idOfPermission = await PermissionRole.find({ roleId })
-      .distinct('permissionId')
+      .distinct("permissionId")
       .exec();
 
     // Fetch all permissions with names in a single query
@@ -34,7 +28,7 @@ const getPermissionsNameBasedOnRoleId = async (roleId) => {
       idOfPermission.map(async (item) => {
         // Map to only include permission names
         const permission = await Permission.findById(item)
-          .distinct('name')
+          .distinct("name")
           .exec();
         return permission;
       })
@@ -45,73 +39,94 @@ const getPermissionsNameBasedOnRoleId = async (roleId) => {
   }
 };
 
-const count= (data)=>{
-    return Role.countDocuments(data)
+// Get All Permission of a specific Role
+const getPermissionsBasedOnRoleId = async (roleId) => {
+   try {
+    return  await PermissionRole.find({ roleId }).distinct('permissionId')
+   } catch (error) {
+    throw serverError(error)
+   }
 }
 
+
+const count = (data) => {
+  return Role.countDocuments(data);
+};
 
 //get all permission
-const getAll = async ({search, sortBy ,sortType, limit , page}) => {
-    try {
-        // populate sortType val for query
-        let sortTypeForDB = generateSortType(sortType);
-        
-        // destructured filter options for query
-        let filter = {}
-        if(search) filter.name = {$regex : search , $options : 'i'}
+const getAll = async ({ search, sortBy, sortType, limit, page }) => {
+  try {
+    // populate sortType val for query
+    let sortTypeForDB = generateSortType(sortType);
 
-        // send request to db with all query params
-        let query = await Permission.find(filter)
-        .sort({[sortBy] : sortTypeForDB})
-        .skip(page * limit - limit)
-        .limit(limit)
-        
+    // destructured filter options for query
+    let filter = {};
+    if (search) filter.name = { $regex: search, $options: "i" };
 
-        // count total permissions based on search query params only, not apply on pagination
-        let totalItems = await count(filter) ;
+    // send request to db with all query params
+    let query = await Permission.find(filter)
+      .sort({ [sortBy]: sortTypeForDB })
+      .skip(page * limit - limit)
+      .limit(limit);
 
-        return {
-            query : query.length > 0 ? query : [],
-            totalItems
-        }
-    } catch (error) {
-        throw serverError(error)
-    }
-}
+    // count total permissions based on search query params only, not apply on pagination
+    let totalItems = await count(filter);
 
+    return {
+      query: query.length > 0 ? query : [],
+      totalItems,
+    };
+  } catch (error) {
+    throw serverError(error);
+  }
+};
 
 // Update or Create Permission to DB
-const updateByPut = async (id,name) => {
-    try {
-        let permission = await Permission.findById(id);
-        let state;
+const updateByPut = async (id, name) => {
+  try {
+    let permission = await Permission.findById(id);
+    let state;
 
-        if(!permission){
-            const data = await Permission.findOne({name}).exec();
-            if(data) throw notFoundError('Permission already exits!')
-            permission = new Permission();
-            permission.name = name;
-            state = 'create'
-        }else{
-        permission.name = name; 
-        state = 'update'
-        }
-        await permission.save();
-        return {permission : permission._doc , state};
-    } catch (error) {
-        throw serverError(error)
+    if (!permission) {
+      const data = await Permission.findOne({ name }).exec();
+      if (data) throw notFoundError("Permission already exits!");
+      permission = new Permission();
+      permission.name = name;
+      state = "create";
+    } else {
+      permission.name = name;
+      state = "update";
     }
-}
+    await permission.save();
+    return { permission: permission._doc, state };
+  } catch (error) {
+    throw serverError(error);
+  }
+};
 
-
-
+// Delete Single Permission by Id
+const deleteById = async (id) => {
+  try {
+    const permission = await Permission.findOne({ _id: id }).exec();
+    if (!permission) {
+      throw notFoundError();
+    } else {
+      await PermissionRole.deleteMany({
+        permissionId: id,
+      });
+      await permission.deleteOne();
+      return true;
+    }
+  } catch (error) {
+    throw serverError(error);
+  }
+};
 
 export default {
-  
   createPermission,
   getPermissionsNameBasedOnRoleId,
+  getPermissionsBasedOnRoleId,
   getAll,
-  updateByPut
+  updateByPut,
+  deleteById
 };
-  
- 
