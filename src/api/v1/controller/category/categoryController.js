@@ -53,5 +53,58 @@ const create = async(req, res, next)=>{
     }
  } 
 
+ // Update or Create Category to DB
+const updateByPut = async (req,res,next) => {
+   try {
+    const {name} = req.body;
+    const {id} = req.params;
+    const {category , state} = await categoryLibs.updateByPut(id,name)
 
-export {create, getAllCategories}
+    res.status(state === 'create' ? 201 : 200).json({
+        code : state === 'create' ? 201 : 200,
+        message : `Category ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+        data : {...category}
+    })
+   } catch (error) {
+        next(error)
+   }
+}
+
+
+// Delete Single Category by Id
+const deleteById = async (req,res,next) => {
+    try {
+    const {id} = req.params;
+    const isDeleted = await categoryLibs.deleteById(id)
+    if(isDeleted){
+        res.status(204).json({
+            code : 204,
+            message : 'Category Deleted Successfully!',
+        })
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+// Delete Multiple Category by Id
+const bulkDelete = async (req,res,next) => {
+   try {
+    const {id} = req.params;
+    const isDeleted = await categoryLibs.deleteById(id)
+    if(isDeleted){
+        res.status(204).json({
+            code : 204,
+            message : 'Category Deleted Successfully!',
+        })
+    }
+   } catch (error) {
+     next(error)
+   }
+}
+
+
+
+export {create, getAllCategories, updateByPut, deleteById, bulkDelete}

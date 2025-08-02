@@ -1,3 +1,3 @@
-import {create, getAllCategories}  from "./categoryController.js";
+import {create, getAllCategories, updateByPut, deleteById, bulkDelete}  from "./categoryController.js";
 
-export default {create, getAllCategories}
+export default {create, getAllCategories, updateByPut, deleteById, bulkDelete}

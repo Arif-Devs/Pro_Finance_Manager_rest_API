@@ -64,7 +64,11 @@ router.route('/users/:id')
 // category route
 router.route('/categories')
 .post(authenticate , authorization(['create-category']),categoryRequest.createRequestValidator, requestValidator, categoryController.create)
-.get(authenticate , authorization(['read-category']),queryRequest.basicQueryParams, requestValidator, categoryController.getAllCategories)
+.get(authenticate , authorization(['read-category']), queryRequest.basicQueryParams, requestValidator, categoryController.getAllCategories)
+router.route('/categories/:id')
+.put(authenticate ,authorization(['update-category']),  categoryRequest.categoryUpdateRequest, requestValidator, categoryController.updateByPut)
+.delete(authenticate ,authorization(['delete-category']),  categoryController.deleteById)
+
 
 
 //expanse route
