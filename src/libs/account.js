@@ -1,6 +1,9 @@
 import { serverError } from "../utils/error.js";
 import Account from "../model/account.js";
 import { generateSelectedItems, generateSortType } from "../utils/query.js";
+import Expanse from "../model/expanse.js";
+import Income from "../model/income.js";
+
 
 
 //create new account
@@ -61,8 +64,43 @@ const getAllData = async({search, sortBy ,sortType, limit, page, user, select, p
 }
 
 
+// get Single Item
+const getById = async ({select,populate,id}) => {
+   try {
+    let selectedColumns = generateSelectedItems(select,['_id','name','account_details','initial_value','userId','createdAt' , 'updatedAt']);
+
+    let populateRelations = generateSelectedItems(populate,['expanse','income','user']);
+    
+
+    // send request to db with all query params
+    let account = await Account.findById(id)
+    .select(selectedColumns)
+    .populate(populateRelations.includes('user') ? {
+        path   : 'userId',
+        select : 'username , email , phone , roleId, createdAt , updatedAt , _id',
+    } : '');
+
+    account = account._doc;
+
+    if(populateRelations.includes('expanse')){
+        let expanses = await Expanse.find({accountId : id}).exec();
+        account = {...account, expanses}
+    }
+    if(populateRelations.includes('income')){
+        let incomes = await Income.find({accountId : id}).exec();
+        account = {...account , incomes}
+    }
+
+    if(account){
+        return account
+    }else{
+        throw notFoundError()
+    }
+   } catch (error) {
+    throw serverError(error)
+   }
+}
 
 
 
-
-export default {createAccount, getAllData}
+export default {createAccount, getAllData, getById}

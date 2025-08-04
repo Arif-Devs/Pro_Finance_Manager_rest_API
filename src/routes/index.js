@@ -56,8 +56,10 @@ router.route('/users/:id')
 
 //account route
  router.route('/accounts')
- .post(authenticate , authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
- .get(authenticate , authorization(['read-account']), queryRequest.basicQueryParams , requestValidator,accountController.getAll)
+ .post(authenticate, authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
+ .get(authenticate, authorization(['read-account']), queryRequest.basicQueryParams , requestValidator,accountController.getAll)
+ router.route('/accounts/:id')
+ .get(authenticate, authorization(['single-account', 'single-own-account']), accountController.getById)
 
 
 

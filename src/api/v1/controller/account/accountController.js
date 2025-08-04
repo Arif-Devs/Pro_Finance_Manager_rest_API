@@ -4,6 +4,8 @@ import {IDQUERY,LIMIT,PAGE,POPULATE,SEARCH,SELECT,SORTBY,SORTTYPE,} from "../../
 import transformMongooseDocs from "../../../../utils/response.js";
 import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js";
+import Account from "../../../../model/account.js";
+import { hasOwn } from "../../../../middleware/hasOwn.js";
 
 //create account on db
 const create = async(req, res, next)=>{
@@ -69,4 +71,40 @@ const getAll = async(req, res, next)=>{
     }
 }
 
-export  {create, getAll}
+
+// Get Single Accounts according to filter from DB
+const getById = async (req,res,next) => {
+    try {
+        const account = await Account.findById(req.params.id).exec();
+    const hasPermit = hasOwn(req.permissions, account ? account._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        let {select,populate} = req.query;
+        let {id} = req.params
+
+        // set default search params   
+        select  = select || SELECT
+        populate = populate || POPULATE
+    
+        let account = await accountLibs.getById({select,populate,id});
+    
+        // generate final responses data
+        let result = {
+            code : 200,
+            message: 'Successfully data Retrieved!',
+            data  : {
+                ...account,
+                links : `${process.env.API_BASE_URL}${req.url}`,
+            }
+        }
+    
+        return res.status(200).json(result)
+    }else{
+
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+export  {create, getAll, getById}
