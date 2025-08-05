@@ -1,3 +1,3 @@
-import {create, getAll, getById} from "./accountController.js";
+import {create, getAll, getById, updateByPatch} from "./accountController.js";
 
-export default{create, getAll, getById}
+export default{create, getAll, getById, updateByPatch}

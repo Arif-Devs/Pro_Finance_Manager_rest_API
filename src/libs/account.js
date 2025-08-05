@@ -102,5 +102,27 @@ const getById = async ({select,populate,id}) => {
 }
 
 
+// Update Single User Via PATCH Request
+const updateByPatch = async (id,name,accountDetails,initialValue,userId) => {
+   try {
+        const account = await Account.findById(id).exec();
+        if(!account) throw new Error('Account Not Found!')
 
-export default {createAccount, getAllData, getById}
+        account.name = name ? name : account.name;
+        account.accountDetails = accountDetails ? accountDetails : account.accountDetails;
+        account.initialValue = initialValue ? initialValue : account.initialValue;
+        account.userId = userId ? userId : account.userId;
+        await account.save();
+
+        
+        delete account._doc.id
+        delete account._doc.__v
+        return account._doc
+   } catch (error) {
+        throw serverError(error)
+   }
+}
+
+
+
+export default {createAccount, getAllData, getById, updateByPatch}

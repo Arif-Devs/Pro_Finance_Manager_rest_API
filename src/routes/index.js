@@ -60,7 +60,7 @@ router.route('/users/:id')
  .get(authenticate, authorization(['read-account']), queryRequest.basicQueryParams , requestValidator,accountController.getAll)
  router.route('/accounts/:id')
  .get(authenticate, authorization(['single-account', 'single-own-account']), accountController.getById)
-
+ .patch(authenticate, authorization(['update-account', 'update-own-account']), accountRequest.UpdatePatchRequestValidator, requestValidator, accountController.updateByPatch)
 
 
 // category route
