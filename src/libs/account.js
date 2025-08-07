@@ -123,6 +123,34 @@ const updateByPatch = async (id,name,accountDetails,initialValue,userId) => {
    }
 }
 
+// Update Single User Via PUT Request
+const updateByPUT = async (id,name,accountDetails,initialValue,userId) => {
+   try {
+    const account = await Account.findById(id).exec();
+
+    if(!account) {
+       const {account} =  await createAccount({name,accountDetails,initialValue,userId})
+        return {
+            account : account._doc, 
+            state : 'create'
+        }
+    }else{
+        account.name = name ? name : account.name;
+        account.accountDetails = accountDetails ? accountDetails : account.accountDetails;
+        account.initialValue = initialValue ? initialValue : account.initialValue;
+        account.userId = userId ? userId : account.userId;
+        await account.save();
+
+        return {
+            account : account._doc,
+            state : 'update'
+        }
+    }
+   } catch (error) {
+    throw serverError(error)
+   }  
+}
 
 
-export default {createAccount, getAllData, getById, updateByPatch}
+
+export default {createAccount, getAllData, getById, updateByPatch, updateByPUT}

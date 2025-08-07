@@ -49,19 +49,19 @@ router.route('/users')
 .get(authenticate, authorization(['read-permission']), queryRequest.basicQueryParams, requestValidator, userController.getAll)
 router.route('/users/:id')
 .get(authenticate, authorization(['single-user', 'single-own-user']), userController.getUserById)
-.patch(authenticate, authorization(['update-user' , 'update-own-user']), userRequest.UpdatePatchRequestValidator, requestValidator, userController.updateUserByPatch)
+.patch(authenticate, authorization(['update-user', 'update-own-user']), userRequest.UpdatePatchRequestValidator, requestValidator, userController.updateUserByPatch)
 .put(authenticate ,  authorization(['update-user' , 'update-own-user']) , userController.updateByPut)
-.delete(authenticate ,  authorization(['delete-user' , 'delete-own-user']) ,userController.deleteById)
+.delete(authenticate ,  authorization(['delete-user', 'delete-own-user']) ,userController.deleteById)
 
 
 //account route
  router.route('/accounts')
  .post(authenticate, authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
- .get(authenticate, authorization(['read-account']), queryRequest.basicQueryParams , requestValidator,accountController.getAll)
+ .get(authenticate, authorization(['read-account']), queryRequest.basicQueryParams, requestValidator,accountController.getAll)
  router.route('/accounts/:id')
  .get(authenticate, authorization(['single-account', 'single-own-account']), accountController.getById)
  .patch(authenticate, authorization(['update-account', 'update-own-account']), accountRequest.UpdatePatchRequestValidator, requestValidator, accountController.updateByPatch)
-
+ .put(authenticate , authorization(['update-account', 'update-own-account']), accountController.updateByPut)
 
 // category route
 router.route('/categories')

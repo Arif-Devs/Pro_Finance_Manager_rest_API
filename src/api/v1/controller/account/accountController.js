@@ -145,4 +145,39 @@ const updateByPatch = async (req,res,next) => {
    }
 }
 
-export  {create, getAll, getById, updateByPatch}
+
+// Update or Create Account to DB
+const updateByPut = async (req,res,next) => {
+  try {
+      const account = await Account.findById(req.params.id).exec();
+    const hasPermit = hasOwn(req.permissions, account ? account._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        let {name,accountDetails,initialValue,userId} = req.body;
+        const {id} = req.params;
+
+        if(userId){
+            await userRelationDataCheck(userId);
+        }else{
+            userId = req.user._id 
+        }
+
+        const {account, state} = await accountLibs.updateByPUT(id,name,accountDetails,initialValue,userId)
+
+        res.status(state === 'create' ? 201 : 200).json({
+            code : state === 'create' ? 201 : 200,
+            message : `Account ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+            data : {
+                ...account,
+            }
+        })
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export  {create, getAll, getById, updateByPatch, updateByPut}
