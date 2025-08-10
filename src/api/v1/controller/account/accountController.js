@@ -6,6 +6,7 @@ import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js";
 import Account from "../../../../model/account.js";
 import { hasOwn } from "../../../../middleware/hasOwn.js";
+import { unAuthorizedError } from "../../../../utils/error.js";
 
 //create account on db
 const create = async(req, res, next)=>{
@@ -179,5 +180,29 @@ const updateByPut = async (req,res,next) => {
   }
 }
 
+// Delete Single Account by Id
+const deleteById = async (req,res,next) => {
+  try {
+    const account = await Account.findById(req.params.id).exec();
+    const hasPermit = hasOwn(req.permissions, account ? account._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        const {id} = req.params;
+        const isDeleted = await accountLibs.deleteById(id);
+        if(isDeleted){
+            res.status(204).json({
+                code : 204,
+                message : 'Account & Associated Incomes , Expanses are Deleted Successfully!',
+            })
+        }
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+  } catch (error) {
+    next(error)
+  }
+}
 
-export  {create, getAll, getById, updateByPatch, updateByPut}
+
+
+export  {create, getAll, getById, updateByPatch, updateByPut, deleteById}

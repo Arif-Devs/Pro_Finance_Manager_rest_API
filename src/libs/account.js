@@ -151,6 +151,23 @@ const updateByPUT = async (id,name,accountDetails,initialValue,userId) => {
    }  
 }
 
+// Delete by Id
+const deleteById = async (id) => {
+   try {
+    const account = await Account.findOne({_id : id}).exec();
+    if(!account) {
+        throw notFoundError();
+    }else{
+        await Expanse.deleteMany({accountId: id}).exec()
+        await Income.deleteMany({accountId: id}).exec()
+        await account.deleteOne()
+        return true;
+    }
+   } catch (error) {
+    throw serverError(error)
+   }
+};
 
 
-export default {createAccount, getAllData, getById, updateByPatch, updateByPUT}
+
+export default {createAccount, getAllData, getById, updateByPatch, updateByPUT, deleteById}
