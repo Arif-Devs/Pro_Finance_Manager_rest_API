@@ -76,9 +76,10 @@ router.route('/categories/:id')
 
 //expanse route
 router.route('/expanses')
-.post(authenticate, authorization(['create-expanse' , 'create-own-expanse']),expanseRequest.expanseCreateRequest, requestValidator, expanseController.create)
-.get(authenticate , authorization(['read-expanse']), queryRequest.basicQueryParams , requestValidator,  expanseController.getAllExpanse)
-
+.post(authenticate, authorization(['create-expanse', 'create-own-expanse']), expanseRequest.expanseCreateRequest, requestValidator, expanseController.create)
+.get(authenticate , authorization(['read-expanse']), queryRequest.basicQueryParams, requestValidator, expanseController.getAllExpanse)
+router.route('/expanses/:id')
+.get(authenticate ,authorization(['single-expanse', 'single-own-expanse']), expanseController.getById)
 
 
 

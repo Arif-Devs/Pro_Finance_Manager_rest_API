@@ -112,7 +112,40 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
 }
 
 
+// get Single Item
+const getById = async ({select,populate,id}) => {
+    try {
+        let selectFields = generateSelectedItems(select,['_id','amount','categoryId','userId','accountId', 'note' ,'createdAt' , 'updatedAt']);
+
+        let populateRelations = generateSelectedItems(populate,['user','category','account']);
+        
+        
+        // send request to db with all query params
+        let expanse = await Expanse.findById(id)
+        .select(selectFields)
+        .populate(populateRelations.includes('user') ? {
+            path   : 'userId',
+            select : 'username , email , phone , roleId,createdAt , updatedAt , _id',
+        } : '')
+        .populate(populateRelations.includes('category') ? {
+            path   : 'categoryId',
+            select : 'name , slug , createdAt , updatedAt , _id',
+        } : '')
+        .populate(populateRelations.includes('account') ? {
+            path   : 'accountId',
+            select : 'name , account_details createdAt , updatedAt , _id',
+        } : '')
+
+        if(expanse){
+            return expanse._doc
+        }else{
+            throw notFoundError()
+        }
+    } catch (error) {
+        throw serverError(error)
+    }
+
+}
 
 
-
-export default {createExpanse, checkRelationData, getAll}
+export default {createExpanse, checkRelationData, getAll, getById}

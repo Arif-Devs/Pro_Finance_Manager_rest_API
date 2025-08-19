@@ -3,6 +3,7 @@ import {LIMIT, PAGE, SORTBY, SORTTYPE, SEARCH, SELECT, POPULATE, IDQUERY, MINPRI
 import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js"
 import transformMongooseDocs from "../../../../utils/response.js";
+import { hasOwn } from "../../../../middleware/hasOwn.js";
 
 
 const create = async(req, res, next)=>{
@@ -69,4 +70,43 @@ const getAllExpanse = async(req, res, next)=>{
 }
 
 
-export  {create, getAllExpanse}
+// Get Single Expanses 
+
+const getById = async (req,res,next) => {
+   try {
+     const data = await Expanse.findById(req.params.id).exec();
+    const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        let {select,populate} = req.query;
+        let {id} = req.params
+
+        // set default search params   
+        select  = select || SELECT
+        populate = populate || POPULATE
+    
+        let expanse = await expanseLibs.getById({select,populate,id});
+    
+        // generate final responses data
+        let result = {
+            code : 200,
+            message: 'Successfully data Retrieved!',
+            data : {
+                ...expanse,
+                links : `${process.env.API_BASE_URL}${req.url}`,
+            }
+                
+            
+        }
+    
+        return res.status(200).json(result)
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+   } catch (error) {
+     next(error)
+   }
+}
+
+
+export  {create, getAllExpanse, getById}
