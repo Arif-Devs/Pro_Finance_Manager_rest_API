@@ -108,5 +108,36 @@ const getById = async (req,res,next) => {
    }
 }
 
+// Update by patch
+const updateByPatch = async (req,res,next) => {
+    try {
+        const data = await Expanse.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+        if(hasPermit){
+            const { id } = req.params;
 
-export  {create, getAllExpanse, getById}
+            let {categoryId,userId,accountId,amount,note} = req.body
+
+            await expanseLibs.checkRelationalData(userId,accountId,categoryId,req.user._id)
+
+            const expanse = await expanseLibs.updateByPatch({id,categoryId,userId,accountId,amount,note})
+
+            return res.status(200).json({
+                code : 200,
+                message : 'Expanse Updated Successfully!',
+                data : {
+                    ...expanse,
+                }
+            });
+        }
+        else{
+            throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+export  {create, getAllExpanse, getById, updateByPatch}

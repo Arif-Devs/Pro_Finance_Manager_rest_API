@@ -147,5 +147,29 @@ const getById = async ({select,populate,id}) => {
 
 }
 
+//update by patch
 
-export default {createExpanse, checkRelationData, getAll, getById}
+const updateByPatch = async ({id,categoryId,userId,accountId,amount,note}) => {
+
+    try {
+        const expanse = await Expanse.findById(id).exec();
+        if(!expanse) throw new Error('Expanse Not Found!')
+
+        expanse.amount = amount ? amount : expanse.amount;
+        expanse.accountId = accountId ? accountId : expanse.accountId;
+        expanse.categoryId = categoryId ? categoryId : expanse.categoryId;
+        expanse.userId = userId ? userId : expanse.userId;
+        expanse.note = note ? note : expanse.note;
+        await expanse.save();
+
+        delete expanse._doc.id
+        delete expanse._doc.__v
+        return expanse._doc
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+
+
+export default {createExpanse, checkRelationData, getAll, getById, updateByPatch}

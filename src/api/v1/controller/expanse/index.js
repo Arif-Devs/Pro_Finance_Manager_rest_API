@@ -1,3 +1,3 @@
-import {create, getAllExpanse, getById} from "./expanseController.js";
+import {create, getAllExpanse, getById, updateByPatch} from "./expanseController.js";
 
-export default {create, getAllExpanse, getById}
+export default {create, getAllExpanse, getById, updateByPatch}
