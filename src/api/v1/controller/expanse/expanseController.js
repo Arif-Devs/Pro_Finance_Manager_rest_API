@@ -4,6 +4,7 @@ import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js"
 import transformMongooseDocs from "../../../../utils/response.js";
 import { hasOwn } from "../../../../middleware/hasOwn.js";
+import checkRelationData from "../../../../libs/expanse.js"
 
 
 const create = async(req, res, next)=>{
@@ -138,6 +139,60 @@ const updateByPatch = async (req,res,next) => {
     }
 }
 
+// Update or Create Expanse to DB
+const updateByPut =async (req,res,next) => {
+    try {
+        const data = await Expanse.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        let {categoryId,userId,accountId,amount,note} = req.body;
+        const {id} = req.params;
+
+        await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
+
+        const {expanse, state} = await expanseLibs.updateByPut({id, categoryId,userId,accountId,amount,note})
+
+        res.status(state === 'create' ? 201 : 200).json({
+            code : state === 'create' ? 201 : 200,
+            message : `Expanse ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+            data : {
+                ...expanse,
+            }
+    })
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+    } catch (error) {
+        next(error)
+    }
+}
 
 
-export  {create, getAllExpanse, getById, updateByPatch}
+// Delete Single Expanse by Id
+const deleteById = async (req,res,next) => {
+   try {
+        const data = await Expanse.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        const {id} = req.params;
+        const isDeleted = await expanseLibs.deleteById(id);
+        if(isDeleted){
+            res.status(204).json({
+                code : 204,
+                message : 'Expanse Deleted Successfully!',
+            })
+        }
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+
+   } catch (error) {
+        next(error)
+   }
+}
+
+
+
+export  {create, getAllExpanse, getById, updateByPatch, updateByPut, deleteById}

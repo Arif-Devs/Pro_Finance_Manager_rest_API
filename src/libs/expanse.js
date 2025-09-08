@@ -170,6 +170,51 @@ const updateByPatch = async ({id,categoryId,userId,accountId,amount,note}) => {
     }
 }
 
+//update by put
+const updateByPut = async ({id, categoryId,userId,accountId,amount,note}) => {
+    try {
+        const expanse = await Expanse.findById(id).exec();
+
+        if(!expanse) {
+        const {expanse} =  await createExpanse({categoryId,userId,accountId,amount,note})
+            return {
+                expanse : expanse._doc, 
+                state : 'create'
+            }
+        }else{
+            expanse.amount = amount ? amount : expanse.amount;
+            expanse.accountId = accountId ? accountId : expanse.accountId;
+            expanse.categoryId = categoryId ? categoryId : expanse.categoryId;
+            expanse.userId = userId ? userId : expanse.userId;
+            expanse.note = note ? note : expanse.note;
+            await expanse.save();
+
+            return {
+                expanse : expanse._doc,
+                state : 'update'
+            }
+        } 
+    } catch (error) {
+        throw serverError(error)
+    } 
+}
 
 
-export default {createExpanse, checkRelationData, getAll, getById, updateByPatch}
+//delete expanse
+const deleteById = async (id) => {
+    try {
+        const expanse = await Expanse.findOne({_id : id}).exec();
+        if(!expanse) {
+            throw notFoundError();
+        }else{
+            
+            await expanse.deleteOne()
+            return true;
+        }
+    } catch (error) {
+        throw serverError(error)
+    }
+};
+
+
+export default {createExpanse, checkRelationData, getAll, getById, updateByPatch, updateByPut, deleteById}

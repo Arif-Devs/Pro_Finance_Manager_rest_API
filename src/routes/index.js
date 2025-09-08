@@ -81,34 +81,14 @@ router.route('/expanses')
 router.route('/expanses/:id')
 .get(authenticate, authorization(['single-expanse', 'single-own-expanse']), expanseController.getById)
 .patch(authenticate, authorization(['update-expanse', 'update-own-expanse']), expanseRequest.expanseCreateRequest, requestValidator, expanseController.updateByPatch)
+.put(authenticate, authorization(['update-expanse', 'update-own-expanse']), expanseController.updateByPut)
+.delete(authenticate, authorization(['delete-expanse', 'delete-own-expanse']), expanseController.deleteById)
 
 
 //income route
 router.route('/incomes')
 .post(authenticate, authorization(['create-income' , 'create-own-income']), expanseRequest.expanseCreateRequest ,requestValidator, incomeController.create)
 .get(authenticate, authorization(['read-income']), queryRequest.basicQueryParams, requestValidator, incomeController.getAllIncome)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
