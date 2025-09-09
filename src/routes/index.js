@@ -89,7 +89,8 @@ router.route('/expanses/:id')
 router.route('/incomes')
 .post(authenticate, authorization(['create-income' , 'create-own-income']), expanseRequest.expanseCreateRequest ,requestValidator, incomeController.create)
 .get(authenticate, authorization(['read-income']), queryRequest.basicQueryParams, requestValidator, incomeController.getAllIncome)
-
+router.route('/incomes/:id')
+.get(authenticate, authorization(['single-income' , 'single-own-income']), incomeController.getById)
 
 
 

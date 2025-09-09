@@ -58,15 +58,46 @@ const getAllIncome = async(req, res, next)=>{
             pagination: generatePagination(totalPage, page, totalItems,limit)
 
         }
-
-
         return res.status(200).json(result)
 
     } catch (error) {
         next(error)
     }
     
-
 }
 
-export default {create, getAllIncome}
+const getById = async (req,res,next) => {
+
+    try {
+        const data = await Income.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+        if(hasPermit){
+            let {select,populate} = req.query;
+            let {id} = req.params
+    
+            // set default search params   
+            select  = select || SELECT
+            populate = populate || POPULATE
+        
+            let income = await incomeLibs.getById({select,populate,id});
+        
+            // generate final responses data
+            let result = {
+                code : 200,
+                message: 'Successfully data Retrieved!',
+                data  : {
+                    ...income,
+                    links : `${process.env.API_BASE_URL}${req.url}`,
+                }
+            }
+            return res.status(200).json(result)
+       
+        }else{
+            throw unAuthorizedError('You Do not have permit to modify or read other user data!')
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+export  {create, getAllIncome, getById}

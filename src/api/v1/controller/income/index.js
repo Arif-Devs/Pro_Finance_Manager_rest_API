@@ -1,3 +1,3 @@
-import incomeController from "./incomeController.js";
+import {create, getAllIncome, getById} from "./incomeController.js";
 
-export default incomeController
+export default {create, getAllIncome, getById}
