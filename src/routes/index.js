@@ -87,13 +87,12 @@ router.route('/expanses/:id')
 
 //income route
 router.route('/incomes')
-.post(authenticate, authorization(['create-income' , 'create-own-income']), expanseRequest.expanseCreateRequest ,requestValidator, incomeController.create)
+.post(authenticate, authorization(['create-income', 'create-own-income']), expanseRequest.expanseCreateRequest ,requestValidator, incomeController.create)
 .get(authenticate, authorization(['read-income']), queryRequest.basicQueryParams, requestValidator, incomeController.getAllIncome)
 router.route('/incomes/:id')
-.get(authenticate, authorization(['single-income' , 'single-own-income']), incomeController.getById)
-
-
-
-
+.get(authenticate, authorization(['single-income', 'single-own-income']), incomeController.getById)
+.patch(authenticate, authorization(['update-income', 'update-own-income']), expanseRequest.expanseCreateRequest, requestValidator, incomeController.updateByPatch)
+.put(authenticate, authorization(['update-income', 'update-own-income']), incomeController.updateByPut)
+.delete(authenticate , authorization(['delete-income', 'delete-own-income']), incomeController.deleteById)
 
 export default router

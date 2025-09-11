@@ -1,4 +1,5 @@
 import { expanseLibs } from "../../../../libs/index.js";
+import Expanse from "../../../../model/expanse.js";
 import {LIMIT, PAGE, SORTBY, SORTTYPE, SEARCH, SELECT, POPULATE, IDQUERY, MINPRICE, MAXPRICE } from "../../../../config/default.js"
 import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js"

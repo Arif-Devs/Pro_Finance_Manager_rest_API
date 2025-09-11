@@ -1,5 +1,5 @@
-import { incomeLibs } from "../../../../libs/index.js";
-import { expanseLibs } from "../../../../libs/index.js";
+import { incomeLibs, expanseLibs } from "../../../../libs/index.js";
+import Income from "../../../../model/income.js";
 import {LIMIT, PAGE, SORTBY, SORTTYPE, SEARCH, SELECT, POPULATE, IDQUERY, MINPRICE, MAXPRICE } from "../../../../config/default.js"
 import transformMongooseDocs from "../../../../utils/response.js";
 import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
@@ -100,4 +100,92 @@ const getById = async (req,res,next) => {
     }
 }
 
-export  {create, getAllIncome, getById}
+// Update Income on DB
+const updateByPatch = async (req,res,next) => {
+    try {
+        const data = await Income.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+        if(hasPermit){
+            const { id } = req.params;
+
+            let {categoryId,userId,accountId,amount,note} = req.body
+
+            await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
+
+            const income = await incomeLibs.updateByPatch({id,categoryId,userId,accountId,amount,note})
+
+            return res.status(200).json({
+                code : 200,
+                message : 'Income Updated Successfully!',
+                data : {
+                    ...income,
+                }
+            });
+        }
+        else{
+            throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+// Update or Create Income to DB
+const updateByPut = async (req,res,next) => {
+    try {
+        const data = await Income.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        let {categoryId,userId,accountId,amount,note} = req.body;
+        const {id} = req.params;
+
+        await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
+
+        const {income, state} = await incomeLibs.updateByPut({id, categoryId,userId,accountId,amount,note})
+
+        res.status(state === 'create' ? 201 : 200).json({
+            code : state === 'create' ? 201 : 200,
+            message : `Income ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+            data : {
+                ...income,
+            }
+        })
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+// Delete Single Income by Id
+const deleteById = async (req,res,next) => {
+    try {
+        const data = await Income.findById(req.params.id).exec();
+        const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
+    if(hasPermit){
+        const {id} = req.params;
+        const isDeleted = await IncomeLibs.deleteById(id);
+        if(isDeleted){
+            res.status(204).json({
+                code : 204,
+                message : 'Income Deleted Successfully!',
+            })
+        }
+    }
+    else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+
+export  {create, getAllIncome, getById, updateByPatch, updateByPut, deleteById}

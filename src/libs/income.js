@@ -122,4 +122,73 @@ const getById = async ({select,populate,id}) => {
 
 }
 
-export default {createIncome, getAll, getById}
+// Update patch
+const updateByPatch = async ({id, categoryId, userId, accountId, amount, note}) => {
+    try {   
+        const income = await Income.findById(id).exec();
+        if(!income) throw new Error('Income Not Found!')
+
+        income.amount = amount ? amount : income.amount;
+        income.accountId = accountId ? accountId : income.accountId;
+        income.categoryId = categoryId ? categoryId : income.categoryId;
+        income.userId = userId ? userId : income.userId;
+        income.note = note ? note : income.note;
+        await income.save();
+
+        delete income._doc.id
+        delete income._doc.__v
+        return income._doc
+    } catch (error) {
+        throw serverError(error)
+    }
+}
+
+
+
+// Update by put
+const updateByPut = async ({id, categoryId,userId,accountId,amount,note}) => {
+    try {
+        const income = await Income.findById(id).exec();
+        if(!income) {
+        const {income} =  await createIncome({categoryId,userId,accountId,amount,note})
+            return {
+                income : income._doc, 
+                state : 'create'
+            }
+        }else{
+            income.amount = amount ? amount : income.amount;
+            income.accountId = accountId ? accountId : income.accountId;
+            income.categoryId = categoryId ? categoryId : income.categoryId;
+            income.userId = userId ? userId : income.userId;
+            income.note = note ? note : income.note;
+            await income.save();
+
+            return {
+                income : income._doc,
+                state : 'update'
+            }
+        }
+    } catch (error) {
+        throw serverError(error)
+    }  
+}
+
+
+
+// Delete 
+const deleteById = async (id) => {
+    try {
+        const income = await Income.findOne({_id : id}).exec();
+        if(!income) {
+            throw notFoundError();
+        }else{
+            await income.deleteOne()
+            return true;
+        }
+    } catch (error) {
+       throw serverError(error) 
+    }
+};
+
+
+export default {createIncome, getAll, getById, updateByPatch, updateByPut, deleteById}
