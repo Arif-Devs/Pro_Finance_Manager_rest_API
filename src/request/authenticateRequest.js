@@ -95,4 +95,6 @@ const loginRequestValidator = [
     }),
 ]
 
+
+
 export default {registerRequestValidator, loginRequestValidator};

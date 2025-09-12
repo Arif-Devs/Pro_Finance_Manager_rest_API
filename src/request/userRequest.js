@@ -97,4 +97,34 @@ const UpdatePatchRequestValidator = [
 
 ];
 
-export default {createRequestValidator, UpdatePatchRequestValidator}
+const resetRequestValidator = [
+    body('old_password')
+    .trim()
+    .custom(async (val , {req}) => {
+        const user = await User.findById(req.params.id).exec();
+        if(!user) Promise.reject('User Not Found!')
+        else{
+           const isMatched =  await bcrypt.compare(val, user._doc.password) 
+           if(!isMatched) return Promise.reject('Old Password not Matched!')    
+        }
+        return true
+    }),
+
+    body('password')
+    .trim()
+    .isLength({min: 6, max:12})
+    .withMessage('Password must be between 5-10 charecters')
+    .bail()
+    .isStrongPassword()
+    .withMessage('Password must be strong'),
+
+    body('confirm_password')
+    .trim()
+    .custom((val,{req}) => {
+        if(val !== req.body.password) throw new Error('Password not match')
+        return true;
+    }),
+];
+
+
+export default {createRequestValidator, UpdatePatchRequestValidator, resetRequestValidator}

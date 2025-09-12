@@ -5,6 +5,7 @@ import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js";
 import { serverError, unAuthorizedError } from "../../../../utils/error.js";
 import { hasOwn } from "../../../../middleware/index.js";
+import User from "../../../../model/user.js";
 
 const create = async (req, res, next) => {
   try {
@@ -192,4 +193,29 @@ const deleteById = async (req,res,next) => {
     
 };
 
-export { create, getAll, getUserById, updateUserByPatch, updateByPut, deleteById };
+const resetPassword = async (req,res,next) => {
+   try {
+    const hasPermit = hasOwn(req.permissions, req.params.id , req.user);
+    if(hasPermit){
+        const user = await User.findById(req.params.id).exec();
+        const hash = await bcrypt.hash(req.body.password , 10);
+        user.password =  hash;
+        user.refresh_token = ''
+        user.issuedIp = ''
+        await user.save();
+
+        res.status(200).json({
+            code : 200,
+            message : 'Password Reset Successfully Login Again!'
+        })
+    }else{
+        throw unAuthorizedError('You Do not have permit to modify or read other user data!');
+    }
+   } catch (error) {
+      next(error)
+   }
+
+}
+
+
+export { create, getAll, getUserById, updateUserByPatch, updateByPut, deleteById, resetPassword };

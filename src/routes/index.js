@@ -9,7 +9,8 @@ import categoryController from '../api/v1/controller/category/index.js'
 import expanseController from '../api/v1/controller/expanse/index.js'
 import incomeController from '../api/v1/controller/income/index.js';
 import { requestValidator, authenticate, authorization } from '../middleware/index.js';
-import  {permissionRequest, RoleRequest,UserRequest,queryRequest, authRequest, accountRequest, categoryRequest, expanseRequest}  from '../request/index.js';
+import  {permissionRequest, RoleRequest, UserRequest, queryRequest, authRequest, accountRequest, categoryRequest, expanseRequest}  from '../request/index.js';
+
 import userRequest from '../request/userRequest.js';
 
 
@@ -54,6 +55,9 @@ router.route('/users/:id')
 .delete(authenticate ,  authorization(['delete-user', 'delete-own-user']),userController.deleteById)
 
 
+// User Password Change Route
+router.patch('/users/:id/reset-password', authenticate,  authorization(['update-password', 'update-own-password']), UserRequest.resetRequestValidator, requestValidator,  userController.resetPassword)
+
 //account route
  router.route('/accounts')
  .post(authenticate, authorization(['create-account']), accountRequest.createRequestValidator ,requestValidator, accountController.create)
@@ -94,5 +98,9 @@ router.route('/incomes/:id')
 .patch(authenticate, authorization(['update-income', 'update-own-income']), expanseRequest.expanseCreateRequest, requestValidator, incomeController.updateByPatch)
 .put(authenticate, authorization(['update-income', 'update-own-income']), incomeController.updateByPut)
 .delete(authenticate , authorization(['delete-income', 'delete-own-income']), incomeController.deleteById)
+
+
+
+
 
 export default router
