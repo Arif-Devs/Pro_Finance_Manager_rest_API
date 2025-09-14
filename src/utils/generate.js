@@ -1,6 +1,14 @@
+import otpGenerator from "otp-generator"
+
 // generate slug
 const generateSlug = (title) => {
   return title.trim().toLowerCase().replace(' ', '-')
 }
 
-export default generateSlug
+
+// Generate OTP 
+const generateUniqueCode = (length = 16) => {
+    const otp = otpGenerator.generate(length, {lowerCaseAlphabets:false, upperCaseAlphabets: false,  specialChars: false }); 
+    return otp;
+}
+export  {generateSlug, generateUniqueCode}

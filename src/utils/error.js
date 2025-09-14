@@ -48,6 +48,13 @@ const categoryRelationDataCheck= async(id)=>{
     if(!data) throw notFoundError('category not found')
 }
 
+const badRequestError = ({msg = 'Bad Request!' , errors = []}) => {
+    const error = new Error(msg)
+    error.status = 405
+    error.errors = errors
+    return error;
+}
+
 export {
     unAuthenticateError,
     serverError,
@@ -56,6 +63,7 @@ export {
     permissionRelationCheck,
     userRelationDataCheck,
     accountRelationDataCheck,
-    categoryRelationDataCheck
+    categoryRelationDataCheck,
+    badRequestError
     
 }

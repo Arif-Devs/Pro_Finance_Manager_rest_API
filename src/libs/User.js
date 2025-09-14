@@ -9,6 +9,7 @@ import {tokenLibs} from './index.js'
 import ip from 'ip'
 import {DEFAULTPASS} from '../config/auth.js'
 import { generateSelectedItems, generateSortType } from '../utils/query.js'
+import { addMinutes } from 'date-fns'
 
 
 // Register or create new user
@@ -216,4 +217,19 @@ const deleteById = async (id) => {
     }
 };
 
-export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch, updateUserPut, deleteById}
+// Update Token for verify Email
+const updateToken = async (usernameOrEmail,OTP) => {
+    try {
+        const user = await User.findOne({$or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]});
+        if(!user) throw notFoundError();
+        user.verification_token = OTP
+        user.expiredAt = addMinutes(new Date() , 5);
+        user.save();
+        return user;
+    } catch (error) {
+      throw serverError(error)  
+    }
+}
+
+
+export default {registerOrCreateUser, getAllData, getSingleById, updateByPatch, updateUserPut, deleteById, updateToken}

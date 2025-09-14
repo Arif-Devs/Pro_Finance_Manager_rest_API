@@ -24,7 +24,8 @@ router.get('/health', (_req, res) =>
 // Auth endpoints
   router.post('/auth/register', authRequest.registerRequestValidator, requestValidator, authController.register )
   router.post('/auth/login', authRequest.loginRequestValidator, requestValidator, authController.login)
-
+  router.post('/auth/logout', authenticate, authController.logout)
+  router.post('/forgot-password/owner-verify', authController.verifyOwner)
 
 //Permission Routes ->
  router.route('/permissions')  

@@ -1,6 +1,6 @@
 import Category from "../model/category.js";
 import { serverError } from "../utils/error.js";
-import generateSlug from '../utils/generate.js'
+import {generateSlug} from '../utils/generate.js'
 import { generateSortType } from "../utils/query.js";
 
 const createCategory = async(name)=>{
