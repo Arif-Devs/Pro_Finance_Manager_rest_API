@@ -60,7 +60,7 @@ Provide users with free financial services while leveraging user data for busine
 ---
 
 ## API Swagger Documentation  
-[Documentation Link](#)  
+[Documentation Link](https://app.swaggerhub.com/apis/Arif-Devs/wallet_api/1.0.0)  
 
 ---
 
@@ -83,42 +83,46 @@ To run this project, you will need to add the following environment variables to
 
 Clone the project:
 
-```bash
-git clone https://github.com/devmunira/wallet_rest_api_v1.git
-
+```
+git clone https://github.com/Arif-Devs/Pro_Finance_Manager_rest_API.git
+```
 
 Go to the project directory:
+```
 cd my-project
+```
 
 
 Install dependencies:
+```
 npm install
+```
 
 
 Seed required role & permission based data. If you want to check forgot password route and get email verification mail to your inbox please set valid email address in src/dbSeeder/userSeeder.js file.
 
 Setup TYPE and separate DB for production on .env file:
+```
 TYPE='production'
 MONGOOSE_TEST_STRING='mongodb://127.0.0.1:27017/test'
-
-
-Run seed:
+```
+To run seed:
+```
 npm run seed
+```
 
-
-Start the server:
+Start the server: 
+```
 npm run dev
+```
 
+### Support 
 
-//add test file added soon
+For support, email: arifur.sew@gmail.com
 
-Support
+### Authors
 
-For support, email arifur.sew@gmail.com
-
-Authors
-
-@Arif-Devs
+[@Arif-Devs](https://github.com/Arif-Devs)
 
 
 
