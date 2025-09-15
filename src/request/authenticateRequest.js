@@ -1,6 +1,6 @@
+import bcrypt from 'bcrypt';
 import { body } from "express-validator";
-import User from '../model/user.js'
-import bcrypt from 'bcrypt'
+import User from '../model/user.js';
 
 //validation check for email
 const isEmailUnique = async (email) => {
@@ -96,5 +96,23 @@ const loginRequestValidator = [
 ]
 
 
+const resetRequestValidator = [
+    body('password')
+    .trim()
+    .isLength({min: 6, max:12})
+    .withMessage('Password must be between 5-10 characters')
+    .bail()
+    .isStrongPassword()
+    .withMessage('Password must be strong'),
 
-export default {registerRequestValidator, loginRequestValidator};
+    body('confirm_password')
+    .trim()
+    .custom((val,{req}) => {
+        if(val !== req.body.password) throw new Error('Password not match')
+        return true;
+    }),
+];
+
+
+
+export default {registerRequestValidator, loginRequestValidator, resetRequestValidator};

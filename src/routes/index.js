@@ -22,10 +22,13 @@ router.get('/health', (_req, res) =>
 
 
 // Auth endpoints
-  router.post('/auth/register', authRequest.registerRequestValidator, requestValidator, authController.register )
-  router.post('/auth/login', authRequest.loginRequestValidator, requestValidator, authController.login)
-  router.post('/auth/logout', authenticate, authController.logout)
-  router.post('/forgot-password/owner-verify', authController.verifyOwner)
+router.post('/auth/register', authRequest.registerRequestValidator, requestValidator, authController.register )
+router.post('/auth/login', authRequest.loginRequestValidator, requestValidator, authController.login)
+router.post('/auth/logout', authenticate, authController.logout)
+router.post('/forgot-password/owner-verify', authController.verifyOwner)
+router.get('/reset-password/:id/:token', authController.verifyResetLink)
+router.post('/reset-password/:id/:token', authRequest.resetRequestValidator, requestValidator, authController.resetPassword)
+router.post('/refresh', authController.refresh)
 
 //Permission Routes ->
  router.route('/permissions')  

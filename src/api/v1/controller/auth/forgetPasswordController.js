@@ -26,4 +26,45 @@ const verifyOwner = async (req,res,next) => {
     }
  }
 
-export default verifyOwner
+
+ const verifyResetLink = async (req,res,next) => {
+   try {
+     const {id, token} = req.params;
+     const user = await TokenLibs.verifyToken(id, token)
+     res.status(200).json({
+      code : 200,
+      message : 'Verification Pass Successfully!'
+     })
+
+   } catch (error) {
+      next(error)
+   }
+ }
+
+
+ const resetPassword = async (req,res,next) => {
+   try {
+     const {id,token} = req.params;
+     const {password} = req.body;
+
+     const user = await TokenLibs.verifyToken(id, token);
+   
+     const hasPassword = await bcrypt.hash(password, 10);
+     user.password = hasPassword;
+     user.refresh_token = '';
+     user.issuedIp = '';
+     await user.save();
+   
+     res.status(200).json({
+      code : 200,
+      message : 'Password Reset Successfully!'
+     })
+   } catch (error) {
+      next(error)
+   }
+ }
+
+
+ 
+
+export  {verifyOwner, verifyResetLink, resetPassword}
