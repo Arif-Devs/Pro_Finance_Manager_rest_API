@@ -113,7 +113,7 @@ const resetRequestValidator = [
     body('password')
     .trim()
     .isLength({min: 6, max:12})
-    .withMessage('Password must be between 5-10 charecters')
+    .withMessage('Password must be between 5-10 characters')
     .bail()
     .isStrongPassword()
     .withMessage('Password must be strong'),
