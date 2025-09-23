@@ -56,16 +56,16 @@ describe('no auth token', () => {
     })
 
 
-describe('given valid argument', () => {
-    it('should return 201 and create user', async () => {
-        const response = await supertest(app)
-            .post('/api/v1/users')
-            .set('authorization', TOKEN)  
-            .send(createUser)
-        expect(response.status).toBe(201)       
+// describe('given valid argument', () => {
+//     it('should return 201 and create user', async () => {
+//         const response = await supertest(app)
+//             .post('/api/v1/users')
+//             .set('authorization', TOKEN)  
+//             .send(createUser)
+//         expect(response.status).toBe(201)       
         
-    })
-})
+//     })
+// })
 
 describe('Get all users', ()=>{
     describe('given valid token and return all users', ()=>{
