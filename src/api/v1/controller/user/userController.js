@@ -77,7 +77,7 @@ const getAll = async (req, res, next) => {
 
 //get single data
 
-const getUserById = async (req, res, _next) => {
+const getUserById = async (req, res, next) => {
   try {
     const hasPermission = hasOwn(req.permissions, req.params.id, req.user);
     
@@ -109,7 +109,7 @@ const getUserById = async (req, res, _next) => {
       return res.status(200).json(result);
     }
   } catch (error) {
-    throw serverError(error);
+    next(error)
   }
 };
 

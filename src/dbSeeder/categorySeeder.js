@@ -1,4 +1,4 @@
-import generateSlug from '../utils/generate.js'
+import {generateSlug} from '../utils/generate.js'
 import Category from '../model/category.js'
 import { faker } from '@faker-js/faker'
 

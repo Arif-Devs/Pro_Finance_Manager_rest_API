@@ -32,7 +32,7 @@ const userSeed = async () => {
 
     const user = new User({
       userName: "userOne",
-      email: "user@email.com", // set valid email for verification
+      email: "user@gmail.com", // set valid email for verification
       password: hashedPassword,
       roleId: userRole,
     });
@@ -40,7 +40,7 @@ const userSeed = async () => {
 
     const adminUser = new User({
       userName: "Admin",
-      email: "admin@email.com",
+      email: "admin@gmail.com",
       password: hashedPassword,
       roleId: adminRole,
     });
