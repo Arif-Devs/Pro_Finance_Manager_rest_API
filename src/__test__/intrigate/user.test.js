@@ -22,9 +22,17 @@ const createInvalidUser = {
 }
 
 const createUser = {
-      userName: 'testTwo',
+      userName: 'userOne',
       email: 'testOne@gmail.com',
       password: 'Arif@8321',
+      confirm_password: 'Arif@8322'
+}
+
+const updateUser = {
+    userName: 'updatedUser',
+    email: 'update@gmail.com',
+    password: 'Arif@8322',
+    confirm_password: 'Arif@8322'
 }
 
 
@@ -87,8 +95,39 @@ describe('get single user', ()=>{
             .get(`/api/v1/users/${user._id}`)
             .set('authorization', TOKEN)
             expect(response.status).toBe(200)
-            //expect(response.body).toHaveProperty('result')
+            expect(response._body).toHaveProperty('data')
         })
     })
 })
 
+
+describe('Delete user', ()=>{
+    it('Should delete user', async ()=>{
+        const userId = new mongoose.Types.ObjectId().toString()
+        const user = await User.findById(userId)
+        const response = await supertest(app)
+            .delete(`/api/v1/users/${userId}`)
+            .set('authorization', TOKEN)
+        if(!user){
+            expect(response.status).toBe(500)
+        }else{
+            expect(response.status).toBe(204)
+        }
+    })
+})
+
+describe('Update user by put', ()=>{
+    describe('given exist id params', ()=>{
+        it('Should return updated user with 200', async()=>{
+            const userId = await User.findOne({}).exec()
+            const response = await supertest(app)
+                .put(`/api/v1/users/${userId._id}`)
+                .set('authorization', TOKEN)
+                .send(updateUser)
+                console.log(response.body);
+                
+                expect(response.status).toBe(200)
+                expect(response._body).toHaveProperty('data')
+        })
+    })
+})

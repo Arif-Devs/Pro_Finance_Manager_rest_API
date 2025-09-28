@@ -151,7 +151,7 @@ const updateUserByPatch = async(req, res, next)=>{
     if(hasPermit){
         const {username,email,phone,roleId,password,confirm_password} = req.body;
         const {id} = req.params;
-        const {user , accessToken , state} = await UserLibs.updateByPUT(id,username,email,phone,roleId,password,confirm_password)
+        const {user , accessToken , state} = await UserLibs.updateUserPut(id,username,email,phone,roleId,password,confirm_password)
 
         const result = state === 'create' ? {...user, accessToken} : {...user}
 
