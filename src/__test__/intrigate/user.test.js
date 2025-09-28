@@ -124,8 +124,20 @@ describe('Update user by put', ()=>{
                 .put(`/api/v1/users/${userId._id}`)
                 .set('authorization', TOKEN)
                 .send(updateUser)
-                console.log(response.body);
-                
+                expect(response.status).toBe(200)
+                expect(response._body).toHaveProperty('data')
+        })
+    })
+})
+
+describe('User update by patch', () =>{
+    describe('Given existing id params', ()=>{
+        it("Should return updated user and return 200", async ()=>{
+            const userId = await User.findOne({}).exec()
+            const response = await supertest(app)
+                .patch(`/api/v1/users/${userId._id}`)
+                .set('authorization', TOKEN)
+                .send(updateUser)
                 expect(response.status).toBe(200)
                 expect(response._body).toHaveProperty('data')
         })
