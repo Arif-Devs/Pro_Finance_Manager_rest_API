@@ -1,4 +1,4 @@
-import {serverError} from '../utils/error.js'
+import {serverError, notFoundError} from '../utils/error.js'
 import Income from '../model/income.js'
 import { generateSelectedItems, generateSortType } from '../utils/query.js'
 

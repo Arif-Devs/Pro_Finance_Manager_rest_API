@@ -64,16 +64,6 @@ describe('no auth token', () => {
     })
 
 
-// describe('given valid argument', () => {
-//     it('should return 201 and create user', async () => {
-//         const response = await supertest(app)
-//             .post('/api/v1/users')
-//             .set('authorization', TOKEN)  
-//             .send(createUser)
-//         expect(response.status).toBe(201)       
-        
-//     })
-// })
 
 describe('Get all users', ()=>{
     describe('given valid token and return all users', ()=>{
@@ -101,20 +91,22 @@ describe('get single user', ()=>{
 })
 
 
-describe('Delete user', ()=>{
-    it('Should delete user', async ()=>{
-        const userId = new mongoose.Types.ObjectId().toString()
-        const user = await User.findById(userId)
-        const response = await supertest(app)
-            .delete(`/api/v1/users/${userId}`)
-            .set('authorization', TOKEN)
-        if(!user){
-            expect(response.status).toBe(500)
-        }else{
-            expect(response.status).toBe(204)
-        }
-    })
-})
+// describe('Delete user', ()=>{
+//     it('Should delete user', async ()=>{
+//         const userId = new mongoose.Types.ObjectId().toString()
+//         const user = await User.findById(userId)
+//         const response = await supertest(app)
+//             .delete(`/api/v1/users/${userId}`)
+//             .set('authorization', TOKEN)
+//         if(!user){
+//             expect(response.status).toBe(500)
+//         }else{
+//             expect(response.status).toBe(204)
+//         }
+//     })
+// })
+
+
 
 describe('Update user by put', ()=>{
     describe('given exist id params', ()=>{
@@ -143,3 +135,13 @@ describe('User update by patch', () =>{
         })
     })
 })
+
+describe('Delete user', () => {
+    it('Should delete user', async () => {
+        const user = await User.findOne(); 
+        const response = await supertest(app)
+            .delete(`/api/v1/users/${user._id}`)
+            .set('authorization', TOKEN);
+        expect(response.status).toBe(204);
+    });
+});

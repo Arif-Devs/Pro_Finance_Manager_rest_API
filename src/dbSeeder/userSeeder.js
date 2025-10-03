@@ -32,11 +32,27 @@ const userSeed = async () => {
 
     const user = new User({
       userName: "userOne",
-      email: "user@gmail.com", // set valid email for verification
+      email: "user@gmail.com", 
       password: hashedPassword,
       roleId: userRole,
     });
     await user.save();
+    
+    const user1 = new User({
+      userName: "user1",
+      email: "user1@gmail.com", 
+      password: hashedPassword,
+      roleId: userRole,
+    });
+    await user1.save();
+    
+    const user2 = new User({
+      userName: "user2",
+      email: "user2@gmail.com", 
+      password: hashedPassword,
+      roleId: userRole,
+    });
+    await user2.save();
 
     const adminUser = new User({
       userName: "Admin",
@@ -46,7 +62,7 @@ const userSeed = async () => {
     });
     await adminUser.save();
 
-    const accounts = await accountSeed(user._doc._id, 10);
+    const accounts = await accountSeed(user._doc._id, 5);
 
     const categories = await Category.find().distinct("_id").lean().exec();
 

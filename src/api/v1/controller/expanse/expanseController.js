@@ -5,7 +5,8 @@ import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js"
 import transformMongooseDocs from "../../../../utils/response.js";
 import { hasOwn } from "../../../../middleware/hasOwn.js";
-import checkRelationData from "../../../../libs/expanse.js"
+import { unAuthorizedError } from "../../../../utils/error.js";
+
 
 
 const create = async(req, res, next)=>{
@@ -51,7 +52,7 @@ const getAllExpanse = async(req, res, next)=>{
         min_price = min_price || MINPRICE
         max_price = max_price || MAXPRICE
         
-        const {query, totalItems} =await expanseLibs.getAll({limit, page, sortType, sortBy, search, user, select, populate, account, category, min_price, max_price, fromDate, toDate})
+        const {query, totalItems} = await expanseLibs.getAll({limit, page, sortType, sortBy, search, user, select, populate, account, category, min_price, max_price, fromDate, toDate})
         
         const totalPage = Math.ceil(totalItems / limit)
 
@@ -120,7 +121,7 @@ const updateByPatch = async (req,res,next) => {
 
             let {categoryId,userId,accountId,amount,note} = req.body
 
-            await expanseLibs.checkRelationalData(userId,accountId,categoryId,req.user._id)
+            await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
 
             const expanse = await expanseLibs.updateByPatch({id,categoryId,userId,accountId,amount,note})
 
@@ -145,21 +146,22 @@ const updateByPut =async (req,res,next) => {
     try {
         const data = await Expanse.findById(req.params.id).exec();
         const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
-    if(hasPermit){
-        let {categoryId,userId,accountId,amount,note} = req.body;
-        const {id} = req.params;
+   
+        if(hasPermit){
+            let {categoryId,userId,accountId,amount,note} = req.body;
+            const {id} = req.params;
 
-        await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
+            await expanseLibs.checkRelationData(userId,accountId,categoryId,req.user._id)
 
-        const {expanse, state} = await expanseLibs.updateByPut({id, categoryId,userId,accountId,amount,note})
+            const {expanse, state} = await expanseLibs.updateByPut({id, categoryId,userId,accountId,amount,note})
 
-        res.status(state === 'create' ? 201 : 200).json({
-            code : state === 'create' ? 201 : 200,
-            message : `Expanse ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
-            data : {
-                ...expanse,
-            }
-    })
+            res.status(state === 'create' ? 201 : 200).json({
+                code : state === 'create' ? 201 : 200,
+                message : `Expanse ${state == 'create' ? 'Created' : 'Updated'} Successfully!`,
+                data : {
+                    ...expanse,
+                }
+        })
     }
     else{
         throw unAuthorizedError('You Do not have permit to modify or read other user data!');

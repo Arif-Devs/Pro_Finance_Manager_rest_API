@@ -50,9 +50,9 @@ const createExpanse = async({amount, note, categoryId, accountId, userId})=>{
 
 const getAll = async({limit, page, sortType, sortBy, search, user, select, populate, account, category, min_price, max_price, fromDate, toDate})=>{
     try {
-        const sortTypeForDB = generateSortType(sortType)
-        const selectFields = generateSelectedItems(select['_id', 'amount', 'categoryId', 'userId','accountId', 'note', 'createdAt', 'updatedAt'])
-        const populateFields = generateSelectedItems(populate['user', 'category', 'account'])
+        let sortTypeForDB = generateSortType(sortType)
+        let selectFields = generateSelectedItems(select, ['_id', 'amount', 'categoryId', 'userId','accountId', 'note', 'createdAt', 'updatedAt'])
+        let populateFields = generateSelectedItems(populate, ['user', 'category', 'account'])
 
         const filter = {}
         if(search) filter.note = {$regex : search , $options : 'i'}
@@ -62,6 +62,7 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
 
         if(min_price || max_price){
             filter.amount = {}
+           
             if(min_price){
                 filter.amount.$gte = min_price
             }
@@ -80,7 +81,7 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
             }
         }
 
-        const query = await Expanse.find(filter)
+        let query = await Expanse.find(filter)
             .select(selectFields)
             .sort({[sortBy]: sortTypeForDB})
             .skip(page * limit - limit)
@@ -98,7 +99,7 @@ const getAll = async({limit, page, sortType, sortBy, search, user, select, popul
                 select: 'name, account_details, createdAt, updatedAt, _id'
             }: '')
 
-            const totalItems = await countExpanse(filter)
+            let totalItems = await countExpanse(filter)
 
             return{
                 query,
@@ -176,7 +177,7 @@ const updateByPut = async ({id, categoryId,userId,accountId,amount,note}) => {
         const expanse = await Expanse.findById(id).exec();
 
         if(!expanse) {
-        const {expanse} =  await createExpanse({categoryId,userId,accountId,amount,note})
+        const {expanse} =  await createExpanse({amount, note, categoryId, accountId, userId})
             return {
                 expanse : expanse._doc, 
                 state : 'create'

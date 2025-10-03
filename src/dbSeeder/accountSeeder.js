@@ -1,7 +1,7 @@
 import Account from '../model/account.js'
 import { faker } from '@faker-js/faker'
 
-const accountSeed = async (id, numOfAccounts = 1) => {
+const accountSeed = async (id, numOfAccounts ) => {
   let accounts = []; 
   for (let i = 0; i < numOfAccounts; i++) {
     const name = faker.lorem.words({ min: 3, max: 5 }); 

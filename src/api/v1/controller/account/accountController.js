@@ -28,7 +28,6 @@ const create = async(req, res, next)=>{
                 ...account._doc
             }
         }
-        console.log(result);
         
         return res.status(201).json(result);
     }

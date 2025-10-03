@@ -7,7 +7,7 @@ import connectMongoDB from '../config/db'
 
 
 
-export const TOKEN = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGQyYmI0MmFmNjAxOTgxOTk0OTRkYzQiLCJ1c2VyTmFtZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlSWQiOiI2OGQyYmI0MmFmNjAxOTgxOTk0OTRkNzgiLCJjcmVhdGVkQXQiOiIyMDI1LTA5LTIzVDE1OjIyOjQyLjE0N1oiLCJ1cGRhdGVkQXQiOiIyMDI1LTA5LTIzVDE1OjIyOjU1LjMwNFoiLCJpc3N1ZWRJcCI6IjE5Mi4xNjguMC4xNjEiLCJpYXQiOjE3NTkwNzI5ODR9.jwmqtZ_qejWjcUNwM51XfFvzQPmKGyhLzGg_JMwI2ww`
+export const TOKEN = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGRmYzlhMjk0MGZmYjY3MGFhZGRkNzciLCJ1c2VyTmFtZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlSWQiOiI2OGRmYzlhMjk0MGZmYjY3MGFhZGRkMjciLCJjcmVhdGVkQXQiOiIyMDI1LTEwLTAzVDEzOjAzOjMwLjY1NVoiLCJ1cGRhdGVkQXQiOiIyMDI1LTEwLTAzVDEzOjAzOjMwLjY1NVoiLCJpc3N1ZWRJcCI6IjE5Mi4xNjguMC4xNjEiLCJpYXQiOjE3NTk0OTY2MjV9.mfazAt1V5rfPvgUGMFJLpWMLqUoDy-D5Ca9GUHG8B58`
 
 beforeAll(async()=>{
     await connectMongoDB('test')
@@ -28,4 +28,5 @@ describe('GET /health', ()=>{
         })
     })
 })
+
 

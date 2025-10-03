@@ -2,6 +2,9 @@ import Category from "../model/category.js";
 import { serverError } from "../utils/error.js";
 import {generateSlug} from '../utils/generate.js'
 import { generateSortType } from "../utils/query.js";
+import { notFoundError } from "../utils/error.js";
+import Expanse from "../model/expanse.js";
+import Income from "../model/income.js";
 
 const createCategory = async(name)=>{
     try {
@@ -91,6 +94,7 @@ const deleteById = async (id) => {
         throw notFoundError(error.message)
     }
 };
+
 
 
 

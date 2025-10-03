@@ -4,6 +4,8 @@ import {LIMIT, PAGE, SORTBY, SORTTYPE, SEARCH, SELECT, POPULATE, IDQUERY, MINPRI
 import transformMongooseDocs from "../../../../utils/response.js";
 import { generateAllDataHateoasLinks } from "../../../../utils/hateoas.js";
 import generatePagination from "../../../../utils/pagination.js";
+import { unAuthorizedError } from "../../../../utils/error.js";
+import { hasOwn } from "../../../../middleware/hasOwn.js";
 
 
 //create income
@@ -170,7 +172,7 @@ const deleteById = async (req,res,next) => {
         const hasPermit = hasOwn(req.permissions, data ? data._doc.userId.toString() : null , req.user);
     if(hasPermit){
         const {id} = req.params;
-        const isDeleted = await IncomeLibs.deleteById(id);
+        const isDeleted = await incomeLibs.deleteById(id);
         if(isDeleted){
             res.status(204).json({
                 code : 204,
